@@ -1,0 +1,105 @@
+{
+	"mcpServers": {
+		"magic": {
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"magic-mcp",
+				"npx",
+				"@21st-dev/magic"
+			]
+		},
+		"gmail": {
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"gmail-mcp",
+				"gmail-mcp"
+			]
+		},
+		"tavily": {
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"tavily-mcp",
+				"npx",
+				"tavily-mcp"
+			]
+		},
+		"sequential-thinking": {
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"sequential-thinking-mcp",
+				"npx",
+				"sequential-thinking-mcp"
+			]
+		},
+		"morphllm-fast-apply": {
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"morphllm-fast-apply-mcp",
+				"npx",
+				"@morph-llm/morph-fast-apply"
+			]
+		},
+		"serena": {
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"serena-mcp",
+				"serena-mcp-server"
+			]
+		},
+		"task-master-ai": {
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"task-master-mcp",
+				"npx",
+				"task-master-ai"
+			]
+		},
+		"context7": {
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"-e",
+				"CONTEXT7_API_KEY=ctx7sk-ef877cec-8c2e-4cee-8c3b-6d666b16ca7d",
+				"-e",
+				"MCP_TRANSPORT=stdio",
+				"context7-mcp:latest"
+			]
+		},
+		"playwright": {
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"playwright-mcp",
+				"npx",
+				"@playwright/mcp"
+			]
+		},
+		"chrome-devtools": {
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"chrome-devtools-mcp",
+				"npx",
+				"chrome-devtools-mcp"
+			]
+		}
+	}
+}

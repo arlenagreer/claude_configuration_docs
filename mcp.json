@@ -1,0 +1,61 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "gmail": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@gongrzhe/server-gmail-autoauth-mcp"
+      ]
+    },
+    "playwright": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "playwright-mcp",
+        "npx",
+        "@playwright/mcp"
+      ]
+    },
+    "tavily": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "tavily-mcp"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "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"
+      }
+    },
+    "context7": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "CONTEXT7_API_KEY=ctx7sk-ef877cec-8c2e-4cee-8c3b-6d666b16ca7d",
+        "-e",
+        "MCP_TRANSPORT=stdio",
+        "context7-mcp:latest"
+      ]
+    },
+    "chrome-devtools": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "chrome-devtools-mcp",
+        "npx",
+        "chrome-devtools-mcp"
+      ]
+    }
+  }
+}

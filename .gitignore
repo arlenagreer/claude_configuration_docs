@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+
+# Dependency directories
+node_modules/
+
+# Environment variables
+.env
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS specific
+.DS_Store
+
+# Claude Code session data
+debug/
+statsig/
+shell-snapshots/
+todos/
+projects/
+file-history/
+session-env/
+cache/
+history.jsonl
+backups/
+
+# Sensitive Google OAuth files
+.google/token.json
+.google/client_secret.json
+
+# Backup files
+*.backup
+*.backup.*
+*~
+\#*\#
