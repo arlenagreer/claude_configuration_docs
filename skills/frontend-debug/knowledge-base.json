@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-10-19",
+  "learned_patterns": [
+    {
+      "pattern_id": "example-001",
+      "pattern": "React event handlers not triggering after dynamic component update",
+      "symptoms": ["Click events ignored", "Console shows no errors", "Event listeners missing in DevTools"],
+      "root_cause": "Event handlers not re-attached after component re-render",
+      "solution": "Use useEffect to re-attach event listeners or move to onClick prop",
+      "confidence": 0.85,
+      "occurrences": 1,
+      "frameworks": ["React"],
+      "last_seen": "2025-10-19"
+    }
+  ],
+  "common_root_causes": {
+    "event_handler_issues": {
+      "count": 0,
+      "typical_symptoms": ["Clicks not working", "Form not submitting"],
+      "investigation_approach": ["Check console for errors", "Inspect event listeners in DevTools", "Verify DOM element exists"]
+    },
+    "api_integration_issues": {
+      "count": 0,
+      "typical_symptoms": ["Data not loading", "Network errors", "CORS errors"],
+      "investigation_approach": ["Check network tab", "Verify API endpoint", "Check authentication headers"]
+    },
+    "state_management_issues": {
+      "count": 0,
+      "typical_symptoms": ["UI not updating", "Stale data displayed", "Race conditions"],
+      "investigation_approach": ["Check state updates in DevTools", "Verify state management logic", "Check for async timing issues"]
+    },
+    "styling_issues": {
+      "count": 0,
+      "typical_symptoms": ["Elements not visible", "Layout broken", "Responsive issues"],
+      "investigation_approach": ["Inspect element styles", "Check CSS specificity", "Verify media queries"]
+    }
+  },
+  "success_metrics": {
+    "total_sessions": 0,
+    "successful_resolutions": 0,
+    "escalations": 0,
+    "average_time_to_resolution": 0,
+    "average_iterations": 0
+  }
+}

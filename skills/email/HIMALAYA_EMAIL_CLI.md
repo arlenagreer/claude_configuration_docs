@@ -9,7 +9,7 @@
 ```toml
 [accounts.gmail]
 email = "arlenagreer@gmail.com"
-display-name = "Arlena Greer"
+display-name = "Arlen A. Greer"
 default = true
 
 backend.type = "imap"

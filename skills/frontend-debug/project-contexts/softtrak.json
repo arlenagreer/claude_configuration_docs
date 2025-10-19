@@ -1,0 +1,68 @@
+{
+  "project": "SoftTrak",
+  "version": "1.0.0",
+  "last_updated": "2025-10-19",
+
+  "credentials": {
+    "primary": {
+      "username": "admin@example.com",
+      "password": "Kakellna123!",
+      "organization": "Acme Corporation",
+      "role": "Admin"
+    },
+    "all_users_password": "Kakellna123!",
+    "auto_correct_enabled": true,
+    "note": "ALL test users use the same password: Kakellna123!"
+  },
+
+  "test_data": {
+    "organizations": [
+      {
+        "name": "Acme Corporation",
+        "primary": true,
+        "description": "Primary test organization"
+      }
+    ],
+    "users": [
+      {
+        "email": "admin@example.com",
+        "role": "Admin",
+        "organization": "Acme Corporation",
+        "primary": true
+      }
+    ],
+    "projects": []
+  },
+
+  "known_quirks": [
+    "Login mechanism sensitive to credential format - always use exact credentials",
+    "Dashboard requires admin privileges for analytics access"
+  ],
+
+  "navigation_patterns": {
+    "login": {
+      "url": "/login",
+      "selectors": {
+        "username_input": "#email",
+        "password_input": "#password",
+        "login_button": "button[type='submit']"
+      }
+    }
+  },
+
+  "common_workflows": [
+    {
+      "name": "Login and access dashboard",
+      "steps": [
+        "Navigate to /login",
+        "Enter credentials",
+        "Click login",
+        "Verify redirect to dashboard"
+      ]
+    }
+  ],
+
+  "api_endpoints": [],
+
+  "debugging_notes": []
+}

@@ -1,0 +1,86 @@
+{
+  "_comment": "Example MCP configuration for Chrome DevTools isolated debugging sessions",
+  "_note": "This configuration should be added to your project's .mcp.json or global Claude Code MCP configuration",
+
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "chrome-devtools-mcp@latest",
+        "--isolated=true",
+        "--headless=false"
+      ],
+      "description": "Chrome DevTools MCP for browser debugging with session isolation",
+      "env": {
+        "USER_DATA_DIR": "/tmp/claude-debug-session"
+      }
+    },
+
+    "_comment_playwright": "Optional: Playwright MCP as fallback for cross-browser testing",
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "playwright-mcp"
+      ],
+      "description": "Playwright MCP for cross-browser testing (fallback)",
+      "env": {}
+    },
+
+    "_comment_sequential": "Sequential Thinking MCP for complex reasoning",
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "sequential-thinking-mcp"
+      ],
+      "description": "Sequential Thinking MCP for structured multi-step reasoning"
+    },
+
+    "_comment_context7": "Context7 MCP for framework documentation and patterns",
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@context7/mcp-server"
+      ],
+      "description": "Context7 MCP for framework-specific documentation and patterns"
+    }
+  },
+
+  "_usage_notes": {
+    "isolated_mode": "The --isolated=true flag ensures each debugging session gets its own temporary user data directory",
+    "headless_mode": "Set --headless=false to see the browser during debugging. Use --headless=true for CI/CD",
+    "user_data_dir": "Can be customized per session by overriding USER_DATA_DIR environment variable",
+    "concurrent_sessions": "Multiple sessions can run simultaneously with isolated mode enabled",
+    "cleanup": "Temporary user data directories are automatically cleaned up when browser closes"
+  },
+
+  "_advanced_configuration": {
+    "custom_browser_path": {
+      "_note": "To use specific Chrome/Chromium installation",
+      "env": {
+        "CHROME_PATH": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+      }
+    },
+    "debugging_port": {
+      "_note": "To specify custom remote debugging port (default: 9222)",
+      "args": ["--port=9223"]
+    },
+    "window_size": {
+      "_note": "To set default window size",
+      "args": ["--window-size=1920,1080"]
+    },
+    "extensions": {
+      "_note": "To load Chrome extensions (incompatible with --isolated)",
+      "args": ["--load-extension=/path/to/extension"]
+    }
+  },
+
+  "_troubleshooting": {
+    "port_already_in_use": "If port 9222 is in use, specify different port with --port flag",
+    "browser_not_found": "Set CHROME_PATH environment variable to Chrome installation path",
+    "connection_timeout": "Increase timeout with --connect-timeout=30000 (30 seconds)",
+    "cleanup_issues": "Manually delete temp directories in /tmp/claude-debug-* if cleanup fails"
+  }
+}

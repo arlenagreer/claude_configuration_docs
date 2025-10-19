@@ -1,0 +1,78 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-10-19",
+  "frameworks": {
+    "react": {
+      "quirks": [
+        {
+          "quirk_id": "react-001",
+          "title": "Stale closure in useEffect",
+          "description": "Event handlers inside useEffect may capture stale state/props",
+          "symptom": "Handler uses old values despite state updates",
+          "solution": "Add dependencies to useEffect array or use functional state updates",
+          "severity": "medium",
+          "documentation": "https://react.dev/learn/synchronizing-with-effects"
+        },
+        {
+          "quirk_id": "react-002",
+          "title": "Keys in lists",
+          "description": "Missing or incorrect keys in mapped lists cause rendering issues",
+          "symptom": "Components don't update correctly, duplicate data appears",
+          "solution": "Use stable unique keys (not array index)",
+          "severity": "high",
+          "documentation": "https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key"
+        }
+      ],
+      "common_issues": [
+        "Infinite re-render loops",
+        "useEffect dependency warnings",
+        "Synthetic event pooling (older React)",
+        "Controlled vs uncontrolled components"
+      ]
+    },
+    "vue": {
+      "quirks": [
+        {
+          "quirk_id": "vue-001",
+          "title": "Reactivity caveats with arrays",
+          "description": "Direct array index assignment doesn't trigger reactivity in Vue 2",
+          "symptom": "Array changes don't update UI",
+          "solution": "Use Vue.set() or array methods (push, splice, etc.)",
+          "severity": "high",
+          "documentation": "https://v2.vuejs.org/v2/guide/reactivity.html#For-Arrays"
+        }
+      ],
+      "common_issues": [
+        "Template syntax errors",
+        "Reactivity issues with nested objects",
+        "Async component loading failures"
+      ]
+    },
+    "angular": {
+      "quirks": [
+        {
+          "quirk_id": "angular-001",
+          "title": "Change detection not triggering",
+          "description": "Changes outside Angular zone don't trigger change detection",
+          "symptom": "UI doesn't update after async operations",
+          "solution": "Use NgZone.run() or ChangeDetectorRef.detectChanges()",
+          "severity": "medium",
+          "documentation": "https://angular.io/api/core/NgZone"
+        }
+      ],
+      "common_issues": [
+        "ExpressionChangedAfterItHasBeenCheckedError",
+        "Dependency injection issues",
+        "Template syntax errors"
+      ]
+    },
+    "vanilla": {
+      "quirks": [],
+      "common_issues": [
+        "Event delegation issues",
+        "Memory leaks from event listeners",
+        "DOM manipulation timing issues"
+      ]
+    }
+  }
+}
