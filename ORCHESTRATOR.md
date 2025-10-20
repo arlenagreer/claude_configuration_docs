@@ -110,6 +110,14 @@ wave_eligible:
   operation_indicators: [improve, optimize, refactor, modernize, enhance, audit, transform]
   scale_indicators: [entire, complete, full, comprehensive, enterprise, large, massive]
   typical_operations: [comprehensive_improvement, systematic_optimization, enterprise_transformation, progressive_enhancement]
+
+email_communication:
+  keywords: [email, send email, compose email, draft email, message, contact, write to]
+  mandatory_route: "@~/.claude/skills/email/email.md"
+  blocked_tools: ["mcp__gmail__send_email", "mcp__gmail__draft_email"]
+  override: null  # No override allowed - CRITICAL rule
+  typical_operations: [send, draft, compose, reply, forward]
+  priority: CRITICAL  # 🔴 Never bypass
 ```
 
 #### Operation Type Classification

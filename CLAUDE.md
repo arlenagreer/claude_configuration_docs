@@ -39,25 +39,47 @@
     - be completely honest, transparent and up-front about any portion of the job that has not yet been addressed
     - provide recommendations for the next steps.
 
-# Email Communication
+# Email Communication - MANDATORY SKILL USAGE
 
-**For all email operations, use the Email Agent Skill: `@~/.claude/skills/email.md`**
+**🔴 CRITICAL: ALL email operations MUST use the Email Agent Skill**
 
-The email skill provides:
-- Gmail MCP integration (primary method)
-- Himalaya CLI fallback (when MCP unavailable)
-- Automatic contact lookup by name (Google Contacts integration)
-- Seasonal/holiday HTML formatting
-- Arlen's authentic writing style guidelines
-- Date-aware theming (spring, summer, fall, winter)
-- National holiday styling (automatically applied)
+**Command**: `@~/.claude/skills/email/email.md [request]`
 
-**Key Features**:
-- ✅ Contact resolution: `~/.claude/skills/email/lookup_contact_email.rb --name "First Last"`
-- ✅ HTML emails with seasonal themes based on current date
-- ✅ Professional writing style maintained
-- ✅ Mobile-responsive email templates
-- ✅ Fallback to Himalaya CLI if Gmail MCP unavailable
+**NEVER use direct Gmail MCP calls** (`mcp__gmail__send_email`, `mcp__gmail__draft_email`)
+**NO exceptions for "simple" emails** - ALL emails require the skill
+
+## Why This Matters
+
+The email skill provides essential features that direct MCP calls bypass:
+- ✅ **Arlen's authentic writing style** - Maintains consistent voice and tone
+- ✅ **Seasonal HTML formatting** - Professional themed templates based on current date
+- ✅ **Automatic contact lookup** - Google Contacts integration by name
+- ✅ **Mobile-responsive templates** - Proper formatting on all devices
+- ✅ **Date-aware theming** - Spring, summer, fall, winter, holiday styles
+- ✅ **Himalaya CLI fallback** - Works even when Gmail MCP unavailable
+
+## Technical Stack
+
+**Primary Method**: Gmail MCP integration (through skill)
+**Fallback Method**: Himalaya CLI (when MCP unavailable)
+**Contact Resolution**: `~/.claude/skills/email/lookup_contact_email.rb --name "First Last"`
+
+## Usage Examples
+
+```bash
+# Send email to contact by name
+@~/.claude/skills/email/email.md "Send Rob a summary of the frontend-debug skill"
+
+# Email with specific formatting
+@~/.claude/skills/email/email.md "Draft professional email to team about Q4 planning"
+
+# Quick message
+@~/.claude/skills/email/email.md "Email Sarah about tomorrow's meeting"
+```
+
+## Enforcement
+
+This rule is enforced in RULES.md as 🔴 CRITICAL priority. Any direct Gmail MCP usage is a behavioral violation.
 
 # Text Message Communication
 

@@ -197,9 +197,41 @@ Actionable rules for enhanced Claude Code framework operation.
 - **Version Context**: When discussing "latest" versions, always verify against current date
 - **Temporal Calculations**: Base all time math on verified current date, not assumptions
 
-✅ **Right**: "Checking env: Today is 2025-08-15, so the Q3 deadline is..."  
-❌ **Wrong**: "Since it's January 2025..." (without checking)  
+✅ **Right**: "Checking env: Today is 2025-08-15, so the Q3 deadline is..."
+❌ **Wrong**: "Since it's January 2025..." (without checking)
 **Detection**: Any date reference without prior env verification
+
+## Email Communication
+**Priority**: 🔴 **Triggers**: Email sending, composing, drafting, email-related requests
+
+- **Email Skill Mandatory**: ALWAYS use `@~/.claude/skills/email/email.md` for ALL email operations
+- **Never Direct MCP**: Never use `mcp__gmail__send_email` or `mcp__gmail__draft_email` directly
+- **No Exceptions**: Even simple emails must use the skill (formatting, style, seasonal themes)
+- **Verification Before Send**: Before any email operation, confirm skill invocation
+- **Features Required**: Seasonal theming, authentic writing style, HTML formatting, contact lookup
+- **Fallback Chain**: Email skill → Himalaya CLI (if MCP unavailable) → Never direct MCP calls
+
+✅ **Right**: `@~/.claude/skills/email/email.md "Send Rob summary of frontend-debug skill"`
+❌ **Wrong**: Direct `mcp__gmail__send_email` call
+❌ **Wrong**: Manual contact lookup + direct Gmail MCP
+**Detection**: `grep -r "mcp__gmail__send\|mcp__gmail__draft"`
+
+## Skill Invocation
+**Priority**: 🔴 **Triggers**: User explicitly requests a skill by name (e.g., "Use the frontend-debug skill")
+
+- **Mandatory Skill Usage**: When user explicitly requests a skill by name, that skill MUST be used
+- **No Substitution Allowed**: NEVER proceed with alternative approaches or manual implementations
+- **Immediate STOP on Failure**: If skill invocation fails, immediately STOP all processing
+- **Error Reporting Required**: Report skill invocation failure to user with exact error details
+- **Request Guidance**: Ask user how to properly invoke the skill or resolve the configuration issue
+- **Skill Location**: Skills are stored in `~/.claude/skills/[skill-name]/` directories
+- **Invocation Method**: Use Skill tool with skill name from available skills list
+- **Zero Tolerance**: This is a CRITICAL workflow requirement - no exceptions or workarounds
+
+✅ **Right**: User requests "frontend-debug" skill → Skill invocation fails → STOP → Report error → Ask for guidance
+❌ **Wrong**: User requests "frontend-debug" skill → Skill invocation fails → Proceed with manual debugging
+❌ **Wrong**: Skill not found → Use alternative tools without user confirmation
+**Detection**: User message contains "use the [skill-name] skill" pattern
 
 
 ## Quick Reference & Decision Trees
@@ -239,10 +271,12 @@ Task type → Best tool:
 
 #### 🔴 CRITICAL (Never Compromise)
 - `git status && git branch` before starting
-- Read before Write/Edit operations  
+- Read before Write/Edit operations
 - Feature branches only, never main/master
 - Root cause analysis, never skip validation
 - Absolute paths, no auto-commit
+- Email skill for ALL email operations (never direct MCP)
+- Explicitly requested skills MUST be used (STOP if skill invocation fails)
 
 #### 🟡 IMPORTANT (Strong Preference)
 - TodoWrite for >3 step tasks

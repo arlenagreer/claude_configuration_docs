@@ -1,3 +1,10 @@
+---
+name: frontend-debug
+description: Autonomously debug frontend issues through empirical browser observation using Chrome DevTools MCP
+category: debugging
+version: 1.0.0
+---
+
 # Frontend Debug Skill - Empirical Browser-Based Debugging
 
 **Purpose**: Autonomously debug frontend issues through empirical browser observation, investigation, and verification using Chrome DevTools MCP.
