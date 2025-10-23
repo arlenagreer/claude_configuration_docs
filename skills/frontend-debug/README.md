@@ -14,13 +14,13 @@ An autonomous, empirical browser-based debugging skill for Claude Code that inve
 
 ```bash
 # Debug an issue
-@~/.claude/skills/frontend-debug/frontend-debug.md "Login button not working"
+@~/.claude/skills/frontend-debug/SKILL.md "Login button not working"
 
 # With optional flags
-@~/.claude/skills/frontend-debug/frontend-debug.md "Dashboard slow" --ultrathink
+@~/.claude/skills/frontend-debug/SKILL.md "Dashboard slow" --ultrathink
 
 # Resume crashed session
-@~/.claude/skills/frontend-debug/frontend-debug.md
+@~/.claude/skills/frontend-debug/SKILL.md
 ```
 
 ### Prerequisites
@@ -35,7 +35,7 @@ An autonomous, empirical browser-based debugging skill for Claude Code that inve
 
 ```
 frontend-debug/
-├── frontend-debug.md           # Main skill file
+├── SKILL.md                    # Main skill file
 ├── README.md                   # This file
 ├── knowledge-base.json         # Learned patterns and metrics
 ├── framework-quirks.json       # Framework-specific gotchas
@@ -243,23 +243,23 @@ rm ~/.claude/skills/frontend-debug/.debug-session-*.json
 
 ### Simple Bug Fix
 ```bash
-@~/.claude/skills/frontend-debug/frontend-debug.md "Submit button disabled incorrectly"
+@~/.claude/skills/frontend-debug/SKILL.md "Submit button disabled incorrectly"
 ```
 
 ### Performance Issue
 ```bash
-@~/.claude/skills/frontend-debug/frontend-debug.md "Page loading slowly" --ultrathink
+@~/.claude/skills/frontend-debug/SKILL.md "Page loading slowly" --ultrathink
 ```
 
 ### Concurrent Debugging (Git Worktrees)
 ```bash
 # Terminal 1
 cd ~/project-main
-@~/.claude/skills/frontend-debug/frontend-debug.md "Issue A"
+@~/.claude/skills/frontend-debug/SKILL.md "Issue A"
 
 # Terminal 2
 cd ~/project-feature-branch
-@~/.claude/skills/frontend-debug/frontend-debug.md "Issue B"
+@~/.claude/skills/frontend-debug/SKILL.md "Issue B"
 ```
 
 ---

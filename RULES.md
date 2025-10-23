@@ -204,14 +204,14 @@ Actionable rules for enhanced Claude Code framework operation.
 ## Email Communication
 **Priority**: 🔴 **Triggers**: Email sending, composing, drafting, email-related requests
 
-- **Email Skill Mandatory**: ALWAYS use `@~/.claude/skills/email/email.md` for ALL email operations
+- **Email Skill Mandatory**: ALWAYS use `@~/.claude/skills/email/SKILL.md` for ALL email operations
 - **Never Direct MCP**: Never use `mcp__gmail__send_email` or `mcp__gmail__draft_email` directly
 - **No Exceptions**: Even simple emails must use the skill (formatting, style, seasonal themes)
 - **Verification Before Send**: Before any email operation, confirm skill invocation
 - **Features Required**: Seasonal theming, authentic writing style, HTML formatting, contact lookup
 - **Fallback Chain**: Email skill → Himalaya CLI (if MCP unavailable) → Never direct MCP calls
 
-✅ **Right**: `@~/.claude/skills/email/email.md "Send Rob summary of frontend-debug skill"`
+✅ **Right**: `@~/.claude/skills/email/SKILL.md "Send Rob summary of frontend-debug skill"`
 ❌ **Wrong**: Direct `mcp__gmail__send_email` call
 ❌ **Wrong**: Manual contact lookup + direct Gmail MCP
 **Detection**: `grep -r "mcp__gmail__send\|mcp__gmail__draft"`

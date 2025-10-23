@@ -182,9 +182,8 @@ mkdir -p ~/.claude/logs
 
 ```
 ~/.claude/
-├── agents/               # SuperClaude + Task Master agents
-├── commands/            # Slash commands + Task Master commands
-│   └── tm/             # Task Master commands
+├── agents/               # SuperClaude agents
+├── commands/            # Slash commands
 ├── data/               # Active databases (astrotask.db)
 ├── logs/               # Maintenance logs (auto-created)
 ├── scripts/            # Maintenance scripts
@@ -193,8 +192,7 @@ mkdir -p ~/.claude/logs
 │   └── setup-cron.sh
 ├── statsig/            # Feature flag cache
 ├── todos/              # Session todo files (cleaned monthly)
-├── MAINTENANCE.md      # This file
-└── TM_COMMANDS_GUIDE.md # Task Master reference
+└── MAINTENANCE.md      # This file
 ```
 
 ---
@@ -211,7 +209,7 @@ tail -100 ~/.claude/logs/database-monitor.log
 
 ### Before Major Updates
 
-Create a backup before updating Claude Code or Task Master:
+Create a backup before updating Claude Code:
 ```bash
 tar -czf ~/claude-backup-pre-update-$(date +%Y%m%d).tar.gz ~/.claude/
 ```

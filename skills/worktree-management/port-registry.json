@@ -1,0 +1,12 @@
+{
+  "base_ports": {
+    "backend": 3000,
+    "frontend": 4000,
+    "database": 5433,
+    "redis": 6379,
+    "playwright": 9223,
+    "chrome_devtools": 9222,
+    "puppeteer": 9224
+  },
+  "allocated_worktrees": {}
+}

@@ -113,7 +113,7 @@ wave_eligible:
 
 email_communication:
   keywords: [email, send email, compose email, draft email, message, contact, write to]
-  mandatory_route: "@~/.claude/skills/email/email.md"
+  mandatory_route: "@~/.claude/skills/email/SKILL.md"
   blocked_tools: ["mcp__gmail__send_email", "mcp__gmail__draft_email"]
   override: null  # No override allowed - CRITICAL rule
   typical_operations: [send, draft, compose, reply, forward]
@@ -232,6 +232,13 @@ wave-strategies:
 | "performance analysis" | complex | team_coordination | performance agent, Playwright, Sequential | 92% |
 | "team standup" | simple | team_coordination | team coordination, all agents context | 85% |
 | "sprint planning" | moderate | team_coordination | pm + lead agents, --think | 88% |
+| "test multiple components" | complex | frontend | Task(frontend-qc-agent), --parallel | 92% |
+| "QA campaign across pages" | complex | frontend | Task(frontend-qc-agent), parallel sub-agents | 95% |
+| "parallel testing" | moderate | frontend | Task(frontend-qc-agent) | 90% |
+| "debug complex issue" | complex | frontend | Task(frontend-debug-agent), specialists | 88% |
+| "multi-domain bug" | complex | frontend | Task(frontend-debug-agent), network+state+ui specialists | 93% |
+| "systemic frontend issue" | complex | frontend | Task(frontend-debug-agent), all specialists | 90% |
+| "low confidence debugging" | complex | frontend | Task(frontend-debug-agent) when confidence <60% | 85% |
 
 ### Decision Trees
 
@@ -345,6 +352,94 @@ token_optimization:
 - **Implementation**: intelligent persona, code_modification/feature_creation focus, Edit/MultiEdit/Task tools
 - **Validation**: qa persona, testing/validation focus, Sequential/Playwright/Context7 tools
 - **Optimization**: performance persona, performance_tuning/resource_optimization focus, Read/Sequential/Grep tools
+
+**Frontend Debugging Specialist Matrix**:
+- **Network**: network-specialist, API/HTTP/CORS/auth focus, Chrome DevTools/Sequential tools
+- **State**: state-specialist, Redux/Context/data-flow focus, Chrome DevTools/Sequential tools
+- **UI**: ui-specialist, DOM/rendering/CSS/a11y focus, Chrome DevTools/Sequential tools
+- **Performance**: performance-specialist, bundle/memory/Core-Web-Vitals focus, Chrome DevTools/Sequential tools
+
+### Agent Selection for Frontend Operations
+
+**frontend-qc-agent Triggers**:
+```yaml
+automatic_triggers:
+  - component_count: ">3"
+  - keyword: "parallel"
+  - keyword: "simultaneous"
+  - time_critical: true
+  - qa_campaign: true
+
+selection_logic:
+  if (components > 3 OR "parallel" in request):
+    route_to: Task(frontend-qc-agent)
+    subagents: ceil(component_count)  # 1 per component
+    max_concurrent: 5
+  else:
+    route_to: Skill(frontend-qc)
+```
+
+**frontend-debug-agent Triggers**:
+```yaml
+automatic_triggers:
+  - confidence_score: "<0.6"
+  - domains: ">1"  # Multi-domain issue
+  - systemic: true  # Affects >3 components
+  - files_to_analyze: ">5"
+  - specialized_request: true  # "performance analysis", "state debugging"
+
+selection_logic:
+  if (confidence < 0.6 OR domains > 1 OR files > 5):
+    route_to: Task(frontend-debug-agent)
+    specialists: auto_select_by_domain_scoring  # network, state, UI, performance
+  else:
+    route_to: Skill(frontend-debug)
+```
+
+**Specialist Delegation (within frontend-debug-agent)**:
+```yaml
+domain_scoring:
+  network_relevance:
+    indicators:
+      - API failures: +0.3
+      - 4xx/5xx errors: +0.3
+      - Timeouts: +0.2
+      - CORS errors: +0.2
+      - Auth failures: +0.3
+    threshold: 0.6
+
+  state_relevance:
+    indicators:
+      - undefined errors: +0.4
+      - State sync issues: +0.3
+      - Redux errors: +0.3
+      - Data persistence: +0.3
+    threshold: 0.6
+
+  ui_relevance:
+    indicators:
+      - Rendering glitches: +0.4
+      - Visual bugs: +0.4
+      - Component not displaying: +0.4
+      - CSS issues: +0.3
+      - a11y violations: +0.3
+    threshold: 0.6
+
+  performance_relevance:
+    indicators:
+      - Slowness: +0.4
+      - Memory issues: +0.3
+      - Large bundle: +0.3
+      - Poor Core Web Vitals: +0.4
+    threshold: 0.6
+
+specialist_spawn:
+  for each domain with score >0.6:
+    tool: Task
+    agent: "debug-specialists/{domain}-specialist"
+    context: {issue, evidence, hypothesis, files, relevance_score}
+    timeout: 20_minutes
+```
 
 #### Persona Auto-Activation System
 

@@ -11,4 +11,4 @@ Delegates to the full Frontend Debug Skill.
 
 ---
 
-@~/.claude/skills/frontend-debug/frontend-debug.md $ARGUMENTS
+@~/.claude/skills/frontend-debug/SKILL.md $ARGUMENTS

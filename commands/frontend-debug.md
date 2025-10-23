@@ -9,7 +9,7 @@ Invoke the Frontend Debug Skill to investigate and resolve a frontend issue thro
 
 1. Load the Frontend Debug Skill:
    ```
-   @~/.claude/skills/frontend-debug/frontend-debug.md $ARGUMENTS
+   @~/.claude/skills/frontend-debug/SKILL.md $ARGUMENTS
    ```
 
 2. If no issue description provided in `$ARGUMENTS`, ask the user:

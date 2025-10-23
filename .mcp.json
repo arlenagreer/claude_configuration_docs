@@ -58,16 +58,6 @@
 				"serena-mcp-server"
 			]
 		},
-		"task-master-ai": {
-			"command": "docker",
-			"args": [
-				"exec",
-				"-i",
-				"task-master-mcp",
-				"npx",
-				"task-master-ai"
-			]
-		},
 		"context7": {
 			"command": "docker",
 			"args": [

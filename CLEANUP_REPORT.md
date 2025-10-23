@@ -40,8 +40,8 @@ Successfully cleaned **3.2MB** of temporary files and established automated main
 680KB   todos/ (171 files)
 12KB    statsig/
 84KB    data/ (consolidated)
-448KB   agents/ (integrated Task Master agents)
-348KB   commands/ (integrated Task Master commands)
+448KB   agents/
+348KB   commands/
 ```
 
 ---
@@ -143,7 +143,7 @@ WAL file size: 0B
 
 ```
 ~/.claude/
-├── agents/                      # 48 agents (SuperClaude + Task Master)
+├── agents/                      # SuperClaude agents
 │   ├── accessibility.md
 │   ├── backend.md
 │   ├── task-checker.md         # ← Integrated from nested .claude/
@@ -151,11 +151,6 @@ WAL file size: 0B
 │   └── task-orchestrator.md    # ← Integrated from nested .claude/
 │
 ├── commands/                    # Slash commands
-│   ├── tm/                     # ← Task Master commands (integrated)
-│   │   ├── init/
-│   │   ├── expand/
-│   │   ├── update/
-│   │   └── ...
 │   └── data/                   # (duplicate db removed)
 │
 ├── data/                       # Active databases only
@@ -185,8 +180,7 @@ WAL file size: 0B
 │
 ├── CLAUDE.md                   # SuperClaude framework
 ├── MAINTENANCE.md              # Maintenance guide
-├── CLEANUP_REPORT.md           # This report
-└── TM_COMMANDS_GUIDE.md       # Task Master reference
+└── CLEANUP_REPORT.md           # This report
 ```
 
 ---
@@ -286,7 +280,6 @@ tar -czf ~/claude-backup-$(date +%Y%m%d-%H%M%S).tar.gz \
 
 - **Maintenance Guide**: `~/.claude/MAINTENANCE.md`
 - **This Report**: `~/.claude/CLEANUP_REPORT.md`
-- **Task Master**: `~/.claude/TM_COMMANDS_GUIDE.md`
 - **SuperClaude**: `~/.claude/CLAUDE.md`
 
 ---
