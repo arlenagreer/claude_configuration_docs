@@ -252,56 +252,7 @@ If confidence < 70%:
 
 **Checkpoint Criteria**: Root cause identified with acceptable confidence, fix strategy approved.
 
-### Step 5: Complexity Escalation Assessment
-
-**After root cause analysis, evaluate debugging complexity for potential agent delegation:**
-
-**Escalation Indicators** (if ANY are true, consider agent delegation):
-
-1. **Low Confidence**: Root cause confidence score **<60%**
-2. **Multi-Domain Issue**: Multiple interacting systems involved
-   - Example: Network (API) + State (Redux) + UI (rendering)
-3. **Systemic Problem**: Issue affects multiple components or features
-4. **Deep Investigation**: Requires analysis across **>5 files**
-5. **Specialized Analysis**: User explicitly requests domain-specific investigation
-6. **Multiple Issues**: User reports 2+ unrelated problems to debug
-
-**Decision Logic**:
-
-If escalation indicators detected:
-```yaml
-action: delegate_to_agent
-reason: "Complex debugging requires specialized sub-agent coordination"
-next_step: "Invoke Task tool with frontend-debug-agent"
-confidence_requirement: "<60% OR multi_domain:true OR systemic:true"
-```
-
-**Agent Invocation Pattern**:
-```
-Tool: Task
-Description: "Complex frontend debugging requiring specialized analysis: [issue-summary]"
-Agent Type: root-cause-analyst
-Context: {
-  browser_evidence: "[screenshots, console logs]",
-  reproduction_steps: "[steps from Phase 1]",
-  hypothesis: "[from Phase 2 analysis]",
-  confidence: "[confidence score]",
-  domains_affected: "[network|state|ui|performance]"
-}
-```
-
-Agent will spawn specialized debugging sub-agents and coordinate investigation.
-
-If escalation indicators NOT detected:
-```yaml
-action: continue_with_skill
-reason: "Confidence acceptable, single-domain issue, skill-based debugging appropriate"
-next_step: "Proceed to Phase 3: Implementation"
-```
-
 ---
-
-**Proceed with skill-based fix implementation:**
 
 ## Phase 3: Implementation
 
@@ -443,26 +394,10 @@ step_3_validate:
 
 If ANY verification criterion fails:
 
-**With `--loop` flag** (Enhanced with Agent Escalation):
-
-**Iteration 1** (Skill-based):
-- Automatically restart from Phase 1
-- Re-investigate with new observations in skill context
-
-**If Iteration 1 fails** → Escalation Decision:
-```yaml
-iteration_1_failed: true
-action: "Evaluate complexity for agent delegation"
-threshold: "If confidence <50% OR new domains discovered → delegate"
-```
-
-**Iterations 2-3** (Agent-based if escalated):
-- Invoke frontend-debug-agent for deeper investigation
-- Agent spawns specialized sub-agents as needed
-- Agent coordinates up to 2 additional iterations
-- Maximum total: 1 skill iteration + 2 agent iterations = 3 total
-
-**Rationale**: Keep simple retries in main context, escalate complex cases to agents.
+**With `--loop` flag**:
+1. Automatically restart from Phase 1
+2. Re-investigate with new observations
+3. Maximum 3 iterations before requesting guidance
 
 **Without `--loop` flag**:
 1. Report verification failure with details
