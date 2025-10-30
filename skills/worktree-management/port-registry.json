@@ -8,5 +8,42 @@
     "chrome_devtools": 9222,
     "puppeteer": 9224
   },
-  "allocated_worktrees": {}
+  "allocated_worktrees": {
+    "SoftTrak-security-settings": {
+      "backend": 3001,
+      "frontend": 4002,
+      "database": 5435,
+      "redis": 6380,
+      "playwright": 9224,
+      "chrome_devtools": 9223,
+      "puppeteer": 9225
+    },
+    "SoftTrak-role-deletion": {
+      "backend": 3002,
+      "frontend": 4003,
+      "database": 5436,
+      "redis": 6381,
+      "playwright": 9225,
+      "chrome_devtools": 9224,
+      "puppeteer": 9226
+    },
+    "SoftTrak-issue-337-security-settings": {
+      "backend": 3003,
+      "frontend": 4004,
+      "database": 5437,
+      "redis": 6382,
+      "playwright": 9226,
+      "chrome_devtools": 9225,
+      "puppeteer": 9227
+    },
+    "SoftTrak-test-connectivity-fix": {
+      "backend": 3004,
+      "frontend": 4005,
+      "database": 5438,
+      "redis": 6383,
+      "playwright": 9227,
+      "chrome_devtools": 9226,
+      "puppeteer": 9228
+    }
+  }
 }

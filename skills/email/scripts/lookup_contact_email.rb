@@ -23,6 +23,15 @@ CREDENTIALS_PATH = File.join(Dir.home, '.claude', '.google', 'client_secret.json
 TOKEN_PATH = File.join(Dir.home, '.claude', '.google', 'token.json')
 OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
 
+# Preferred email overrides for specific contacts
+# These take precedence over Google Contacts lookup
+PREFERRED_EMAILS = {
+  'mark whitney' => 'mark@dreamanager.com',
+  'julie whitney' => 'julie@dreamanager.com',
+  'rose fletcher' => 'rose@dreamanager.com'
+  # Ed Korkuch handled separately based on context
+}.freeze
+
 # Authorize with Google OAuth 2.0
 def authorize
   # Check if credentials file exists
@@ -124,6 +133,17 @@ def lookup_contact(name_query)
   # Extract first and last name (ignoring middle names)
   query_first = name_parts.first.downcase
   query_last = name_parts.last.downcase
+
+  # Check for preferred email override
+  name_normalized = "#{query_first} #{query_last}"
+  if PREFERRED_EMAILS.key?(name_normalized)
+    return {
+      status: 'success',
+      email: PREFERRED_EMAILS[name_normalized],
+      name: name_query,
+      note: 'Using preferred email address override'
+    }
+  end
 
   begin
     # Fetch all contacts with names and email addresses

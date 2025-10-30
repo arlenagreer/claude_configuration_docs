@@ -205,31 +205,165 @@ Main Task: Complex Debug Investigation
 
 ## Troubleshooting
 
-### Agent Not Activating When Expected
+### Issue 1: Task Tool Not Available (CRITICAL)
+
+**Symptoms**:
+- Skill detects complexity correctly (e.g., "4 components > 3 threshold")
+- Delegation decision logged
+- Error message: "Task tool not available in current context"
+- Falls back to coordinated sequential testing
+
+**Root Cause**: Skill's `allowed-tools` configuration missing `Task` tool
+
+**Diagnosis Steps**:
+1. Check skill's SKILL.md frontmatter:
+   ```bash
+   head -10 ~/.claude/skills/frontend-qc/SKILL.md
+   ```
+2. Look for `allowed-tools:` line
+3. Verify `Task` is included in the list
+
+**Fix**:
+```yaml
+# BEFORE (Broken - Phase 3.1 discovery)
+allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write
+
+# AFTER (Fixed)
+allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write, Task
+```
+
+**Validation**:
+1. Save the updated SKILL.md file
+2. Re-invoke skill with complex scenario (>3 components or multi-domain issue)
+3. Verify Task tool invocation succeeds
+4. Confirm agent spawns and delegates work
+
+**Real Example** (Phase 3.1):
+- frontend-qc detected 4 components correctly
+- Logged: "Decision: FALLBACK TO COORDINATED PARALLEL EXECUTION"
+- Reason: "Task tool not available in current context"
+- Fix: Added `, Task` to line 4 of SKILL.md
+- Result: Agent delegation now works
+
+**Prevention**:
+- Use explicit `allowed-tools` for all delegation-capable skills
+- Include `Task` in all skills that may delegate to agents
+- See `DELEGATION_PATTERNS_GUIDE.md` for skill design checklist
+
+### Issue 2: Agent Not Activating When Expected
 
 **Check**:
-1. Complexity thresholds met? (>3 components, <60% confidence)
-2. Keywords present? ("parallel", "simultaneous")
-3. Skill escalation logic added? (Phase 1 complete)
+1. Complexity thresholds met? (>3 components, <60% confidence, multi-domain)
+2. Keywords present? ("parallel", "simultaneous", specific domains)
+3. Skill escalation logic working? (Check logs for complexity assessment)
 
-**Solution**: Explicitly request agent mode
+**Solution**:
+- Explicitly request agent mode
+- Verify Task tool is available (see Issue 1)
+- Check that agent files exist
 
-### Agent Fails to Spawn Sub-Agents
+### Issue 3: Agent Fails to Spawn Sub-Agents
 
 **Possible Causes**:
-- Task tool not available (check Claude Code installation)
+- Task tool not available (see Issue 1 - most common)
 - Agent definition file missing or malformed
 - Sub-agent file path incorrect
+- Agent YAML frontmatter invalid
 
-**Solution**: Verify agent files exist and YAML frontmatter valid
+**Diagnosis**:
+```bash
+# Check agent files exist
+ls -la ~/.claude/agents/frontend-*-agent.md
 
-### Specialists Not Being Invoked
+# Check agent frontmatter
+head -20 ~/.claude/agents/frontend-qc-agent.md
+
+# Check for syntax errors
+grep -A 5 "^---$" ~/.claude/agents/frontend-qc-agent.md
+```
+
+**Solution**:
+- Verify agent files exist at correct paths
+- Validate YAML frontmatter syntax
+- Ensure agent names match exactly in Task invocations
+- Fix Task tool availability (Issue 1)
+
+### Issue 4: Specialists Not Being Invoked
 
 **Check**: Specialist relevance scores
-- Network score >0.6? (Need API failures in evidence)
-- State score >0.6? (Need undefined errors in evidence)
+- Network score >0.6? (Need API failures, CORS, 404, timeout in evidence)
+- State score >0.6? (Need undefined errors, localStorage issues in evidence)
+- UI score >0.6? (Need responsive design, CSS, rendering issues in evidence)
+- Performance score >0.6? (Need slow loading, memory, bundle size in evidence)
 
-**Solution**: Provide more domain-specific evidence in issue description
+**Diagnosis**:
+```javascript
+// Check if domain keywords are present in issue description
+const hasNetworkKeywords = /API|404|CORS|timeout|endpoint/.test(issueDescription);
+const hasStateKeywords = /undefined|null|state|redux|localStorage/.test(issueDescription);
+const hasUIKeywords = /display|render|CSS|responsive|mobile/.test(issueDescription);
+const hasPerfKeywords = /slow|memory|bundle|loading|performance/.test(issueDescription);
+```
+
+**Solution**:
+- Provide more domain-specific evidence in issue description
+- Include specific error messages (e.g., "404 on /api/payment")
+- Mention domain indicators (e.g., "localStorage key mismatch")
+- Lower specialist relevance threshold if too restrictive
+
+### Issue 5: Performance Not Meeting Expectations
+
+**Symptoms**:
+- Parallel execution not faster than expected
+- High token usage despite agent delegation
+- Agents spawning slowly
+
+**Possible Causes**:
+- Specialists running sequentially instead of parallel
+- Context being duplicated across specialists
+- Network latency in MCP server calls
+- Too many specialists spawned (resource contention)
+
+**Diagnosis**:
+```bash
+# Check if specialists truly run in parallel
+# Look for concurrent "in_progress" states in TodoWrite
+
+# Check token usage patterns
+# Monitor main context vs specialist context sizes
+```
+
+**Solution**:
+- Ensure Task tool properly spawns parallel agents
+- Minimize context passed to specialists
+- Use isolated browser sessions (frontend-qc)
+- Optimize specialist coordination logic
+- Consider lowering max_concurrent limit if resource constrained
+
+### Issue 6: Skill Configuration Inconsistency
+
+**Symptoms**:
+- One skill delegates successfully (e.g., frontend-debug)
+- Another skill fails to delegate (e.g., frontend-qc)
+- Both have similar complexity scenarios
+
+**Root Cause**: Different `allowed-tools` configurations
+
+**Examples**:
+```yaml
+# frontend-debug (works - no restrictions)
+# No allowed-tools line = all tools available including Task
+
+# frontend-qc (was broken - explicit restrictions)
+allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write
+# Missing: Task
+```
+
+**Solution**:
+- Standardize on either explicit or permissive approach
+- If using explicit `allowed-tools`, always include `Task` for delegation
+- Document tool requirements in skill design
+- See `DELEGATION_PATTERNS_GUIDE.md` for configuration patterns
 
 ---
 
@@ -267,4 +401,45 @@ A: Watch for Task tool invocation messages or TodoWrite structure changes indica
 
 ---
 
+---
+
+## Additional Resources
+
+### Delegation Patterns Guide
+
+For detailed technical information about skill→agent delegation architecture:
+
+**See**: `~/.claude/skills/DELEGATION_PATTERNS_GUIDE.md`
+
+**Topics Covered**:
+- Architecture overview and benefits
+- Delegation decision frameworks (quantity-based vs multi-factor)
+- Configuration requirements and templates
+- Complexity detection patterns
+- Agent orchestration strategies
+- Comprehensive troubleshooting
+- Design checklists
+- Real-world examples with performance metrics
+
+**When to Read**:
+- Designing new skills that delegate to agents
+- Debugging delegation issues
+- Understanding complexity thresholds
+- Optimizing agent performance
+
+### Phase 3 Test Results
+
+**frontend-qc Testing**: `~/.claude/skills/frontend-qc/phase3-test-results.md`
+- 4-component parallel testing validation
+- Task tool availability fix discovery and resolution
+- Bug discovery verification (2/2 intentional bugs found)
+
+**frontend-debug Testing**: `~/.claude/skills/frontend-debug/phase3-test-results.md`
+- Multi-domain complexity detection validation
+- Escalation indicator system verification
+- E-commerce checkout flow test application (10 intentional bugs)
+
+---
+
 **End of Usage Guide**
+**Last Updated**: 2025-10-23 (Phase 3 validation complete)

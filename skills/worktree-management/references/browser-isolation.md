@@ -76,8 +76,39 @@ Each worktree's `.mcp.json` file configures browser isolation using **container-
 
 ## Browser MCP Configurations
 
+### Chrome DevTools MCP
+**Isolation Method**: `--isolated=true` flag (primary) + separate user data directory (backup)
+**Ports**: Auto-incremented with +4 offset (9226, 9227, 9228, ...)
+**Profiles**: Temporary isolated profiles (auto-cleanup)
+
+**Configuration**:
+```json
+{
+  "args": ["npx", "chrome-devtools-mcp", "--isolated=true"]
+}
+```
+
+**Isolation Mechanism**:
+- `--isolated=true`: Creates temporary profile per browser instance
+- Automatic cleanup: Profiles deleted when browser closes
+- No profile path conflicts between worktrees
+- Each Claude Code session gets completely independent browser
+
+**Benefits**:
+- Parallel debugging sessions without interference
+- Separate DevTools instances per worktree
+- Independent network recording
+- No cookie/session conflicts
+- Automatic cleanup (no manual maintenance)
+
+**Why `--isolated` Over User Data Directory?**
+- chrome-devtools-mcp runs on host (not in Docker), so Docker volume paths are inaccessible
+- `--isolated` flag is built-in solution designed for this exact use case
+- Temporary profiles prevent state persistence issues
+- Simpler and more reliable than path-based isolation
+
 ### Playwright MCP
-**Isolation**: Separate user data directory per worktree
+**Isolation**: Separate user data directory per worktree (Docker volume-based)
 **Ports**: Auto-incremented (9224, 9225, 9226, ...)
 **Profiles**: Isolated Chromium, Firefox, and WebKit profiles
 
@@ -87,19 +118,8 @@ Each worktree's `.mcp.json` file configures browser isolation using **container-
 - Independent screenshot/video recordings
 - No interference between test runs
 
-### Chrome DevTools MCP
-**Isolation**: Separate user data directory per worktree
-**Ports**: Auto-incremented with +4 offset (9226, 9227, 9228, ...)
-**Profiles**: Isolated Chrome profiles with extensions
-
-**Benefits**:
-- Parallel debugging sessions
-- Separate DevTools instances
-- Independent network recording
-- No cookie/session conflicts
-
 ### Puppeteer MCP
-**Isolation**: Separate user data directory per worktree
+**Isolation**: Separate user data directory per worktree (Docker volume-based)
 **Ports**: Auto-incremented with +4 offset from Playwright (9228, 9229, 9230, ...)
 **Profiles**: Isolated Chromium profiles
 

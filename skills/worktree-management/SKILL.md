@@ -41,13 +41,15 @@ Creates a new Git worktree with isolated services. The process:
 2. Allocates unique ports (auto-incremented from existing worktrees)
 3. Creates Git worktree and branch
 4. Copies `.env` files from main project (backend/.env, frontend/.env, .env)
-5. Creates isolated browser data directory (`.browser-data/`)
-6. Generates `.mcp.json` with browser isolation configuration
-7. Generates `docker-compose.worktree.yml` extending main config
-8. Creates `start-worktree.sh` startup script
-9. Updates worktree tracking registry
-10. Optionally starts Docker services
-11. Provides next-step instructions for Claude Code launch
+5. **Configures CORS for worktree frontend port** - Updates both `backend/.env` ALLOWED_ORIGINS and `backend/config/initializers/cors.rb` to include the worktree's frontend port
+6. Creates isolated browser data directory (`.browser-data/`)
+7. Generates `.mcp.json` with browser isolation configuration
+8. Generates `docker-compose.worktree.yml` extending main config
+9. Creates `start-worktree.sh` startup script
+10. **Updates `.gitignore` to exclude `.gitignore` and `.mcp.json` files** (prevents committing worktree-specific configs)
+11. Updates worktree tracking registry
+12. Optionally starts Docker services
+13. Provides next-step instructions for Claude Code launch
 
 **Examples:**
 ```bash
@@ -137,8 +139,8 @@ Updates worktree branch from development/main by fetching latest and rebasing.
 - Frontend: 4000 (main), 4001+ (worktrees)
 - Database: 5433 (main), 5434+ (worktrees)
 - Playwright: 9223 (main), 9224+ (worktrees)
-- Chrome DevTools: 9222 (main), 9226+ (worktrees)
-- Puppeteer: 9224 (main), 9228+ (worktrees)
+- Chrome DevTools: 9222 (main), 9223+ (worktrees)
+- Puppeteer: 9224 (main), 9225+ (worktrees)
 
 **Port conflict prevention:**
 - Pre-flight validation checks all ports before Docker startup
@@ -150,48 +152,137 @@ For detailed port allocation documentation, see `references/port-allocation.md`.
 
 ### Browser Isolation
 
-Each worktree creates a `.browser-data/` directory with subdirectories for each browser MCP:
-```
-.browser-data/
-├── playwright/       # Playwright browser profiles
-├── chrome-devtools/  # Chrome DevTools user data
-└── puppeteer/        # Puppeteer browser profiles
+Each worktree gets its own Docker-based browser automation services with complete isolation:
+
+**Docker Services Created:**
+- `chrome-devtools-mcp-{worktree-name}`: Headless Chrome for DevTools Protocol automation
+- Each service uses a named Docker volume for persistent browser data
+- Unique container names prevent conflicts between worktrees
+
+**Chrome DevTools MCP Configuration:**
+```yaml
+chrome-devtools-mcp:
+  container_name: chrome-devtools-mcp-{worktree-name}
+  ports:
+    - "{allocated-port}:9222"
+  volumes:
+    - chrome_devtools_data_{worktree-name}:/data
 ```
 
-**Environment variables set per worktree:**
-- `PLAYWRIGHT_USER_DATA_DIR`: Points to worktree's `.browser-data/playwright/`
-- `CHROME_USER_DATA_DIR`: Points to worktree's `.browser-data/chrome-devtools/`
-- `PUPPETEER_USER_DATA_DIR`: Points to worktree's `.browser-data/puppeteer/`
-- `CHROME_ARGS`: Includes `--user-data-dir` and `--remote-debugging-port`
-- `PUPPETEER_LAUNCH_OPTIONS`: JSON with args array for user data and debugging port
+**MCP Server Configuration:**
+Each worktree's `.mcp.json` is automatically configured to use its own Chrome DevTools container:
+```json
+{
+  "chrome-devtools": {
+    "command": "docker",
+    "args": ["exec", "-i", "chrome-devtools-mcp-{worktree-name}", ...],
+    "env": {
+      "CHROME_USER_DATA_DIR": "/data",
+      "CHROME_REMOTE_DEBUGGING_PORT": "9222"
+    }
+  }
+}
+```
 
 **Benefits:**
-- Run Playwright tests in multiple worktrees simultaneously
-- Separate browser state per worktree
-- No cookie/session conflicts
-- Independent debugging ports
+- Run browser automation in multiple worktrees simultaneously
+- Complete isolation of browser state, cookies, and sessions
+- No container name conflicts - each worktree has unique container
+- Independent debugging ports for each worktree
+- Persistent browser data across container restarts
+
+**Technical Details:**
+- Internal port is always 9222 (Chrome debugging protocol standard)
+- External port is auto-allocated (9222 for main, 9223+ for worktrees)
+- Docker port mapping handles external isolation: `{external}:9222`
+- Each worktree's Claude Code instance connects to its own container
 
 For detailed browser isolation information, see `references/browser-isolation.md`.
 
 ### Docker Compose Strategy
 
-Uses Docker Compose extension pattern. Each worktree generates a `docker-compose.worktree.yml` that extends the main `docker-compose.yml` with custom port mappings.
+Each worktree generates a standalone `docker-compose.worktree.yml` file (does NOT extend main docker-compose.yml).
+
+**Services included:**
+- `backend-{worktree-name}`: Rails API server with unique port
+- `frontend-{worktree-name}`: React dev server with unique port
+- `db-{worktree-name}`: PostgreSQL database with unique port
+- `chrome-devtools-mcp-{worktree-name}`: Headless Chrome for browser automation
+- `redis-{worktree-name}`: Redis (disabled by default for development)
+
+**Key Features:**
+- Each service has worktree-specific container name
+- Unique port mappings prevent conflicts
+- Named Docker volumes for data persistence
+- Environment variables configured per worktree
 
 **Usage:**
 ```bash
-docker-compose -f docker-compose.yml -f docker-compose.worktree.yml up
+cd /path/to/worktree
+docker-compose -f docker-compose.worktree.yml up
+# Or use the convenience script:
+./start-worktree.sh
 ```
 
 For detailed Docker strategy documentation, see `references/docker-strategy.md`.
 
 ### Environment File Management
 
-Automatically copies environment files from main project to each worktree:
-- `backend/.env` → Copied to worktree's backend directory
-- `frontend/.env` → Copied to worktree's frontend directory
-- `.env` (root) → Copied to worktree root
+Automatically copies and configures environment files from main project to each worktree:
+- `backend/.env` → Copied to worktree's backend directory (CORS configured)
+- `frontend/.env` → Copied and **updated with worktree backend port**
+- `frontend/.env.development` → Copied and **updated with worktree backend port**
+- `.env` (root) → Copied to worktree root (ports updated)
 
-This prevents Docker service startup failures due to missing gitignored files.
+**Critical Frontend Configuration:**
+The skill automatically updates `VITE_API_BASE_URL` in both `frontend/.env` and `frontend/.env.development` to point to the worktree's backend port. This ensures proper frontend-backend isolation between worktrees.
+
+Example:
+- Main project: `VITE_API_BASE_URL=http://localhost:3000/api/v1`
+- Worktree 1: `VITE_API_BASE_URL=http://localhost:3001/api/v1`
+- Worktree 2: `VITE_API_BASE_URL=http://localhost:3002/api/v1`
+
+This prevents Docker service startup failures due to missing gitignored files and ensures each worktree's frontend communicates with its own backend instance.
+
+### CORS Configuration
+
+**Automatic CORS setup for worktree frontend port:**
+
+When creating a worktree, the skill automatically configures CORS to allow the worktree's frontend port:
+
+1. **Updates `backend/.env`**: Adds the worktree frontend port (e.g., `http://localhost:4004`) to the `ALLOWED_ORIGINS` environment variable
+2. **Updates `cors.rb`**: Adds the worktree frontend port to the development defaults array in `backend/config/initializers/cors.rb`
+
+**Why this matters:**
+- Prevents CORS errors when the frontend tries to communicate with the backend API
+- Ensures login, API calls, and authentication work immediately without manual configuration
+- Each worktree gets its frontend port automatically whitelisted
+
+**Example:**
+For a worktree with frontend port 4004, both files will include `http://localhost:4004`:
+- `.env`: `ALLOWED_ORIGINS=http://localhost:4000,...,http://localhost:4004`
+- `cors.rb`: `allowed_origins = ["http://localhost:4000", ..., "http://localhost:4004"]`
+
+For detailed CORS configuration documentation, see `references/cors-configuration.md`.
+
+### Worktree-Specific Git Configuration
+
+Each worktree automatically configures its `.gitignore` to exclude worktree-specific files:
+- `.gitignore` itself - Prevents worktree's customized gitignore from being committed
+- `.mcp.json` - Prevents worktree's browser isolation config from being committed
+
+**Purpose:**
+- Keeps worktree-specific configurations isolated
+- Prevents accidental merge of worktree configs back to main branch
+- Maintains clean separation between worktree and main project settings
+
+**Implementation:**
+The skill appends these entries to the worktree's `.gitignore` during creation:
+```
+# Worktree-specific files (do not commit)
+.gitignore
+.mcp.json
+```
 
 ### State Tracking
 
@@ -241,6 +332,7 @@ git merge feature/auth
 - `port-allocation.md` - Detailed port allocation documentation
 - `browser-isolation.md` - Browser MCP isolation details
 - `docker-strategy.md` - Docker Compose extension pattern
+- `cors-configuration.md` - CORS auto-configuration details
 - `troubleshooting.md` - Common issues and solutions
 
 **State Files** (skill root):
@@ -263,6 +355,7 @@ To execute worktree commands, invoke the main script:
 7. **Keep worktrees for reuse**: Don't remove unless completely done with feature
 8. **Check status before merge**: View uncommitted changes with `@worktree status <name>`
 9. **Browser isolation works automatically**: No manual configuration needed for parallel testing
+10. **Worktree configs stay isolated**: `.gitignore` and `.mcp.json` automatically excluded from commits
 
 ## Safety Features
 
@@ -273,7 +366,9 @@ To execute worktree commands, invoke the main script:
 - State tracking enables recovery
 - Confirmation prompts for destructive operations
 - Automatic `.env` file copying prevents Docker failures
+- **Automatic CORS configuration prevents authentication and API errors**
 - Browser isolation prevents session conflicts
+- **Automatic `.gitignore` configuration prevents accidental commit of worktree-specific files**
 
 ## Limitations
 

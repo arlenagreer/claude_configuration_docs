@@ -1,4 +1,69 @@
 {
   "main_project": "/Users/arlenagreer/Github_Projects/SoftTrak",
-  "worktrees": []
+  "worktrees": [
+    {
+      "name": "SoftTrak-security-settings",
+      "path": "/Users/arlenagreer/Github_Projects/SoftTrak-security-settings",
+      "branch": "security-settings",
+      "created": "2025-10-23T19:59:40Z",
+      "ports": {
+        "backend": 3001,
+        "frontend": 4002,
+        "database": 5435,
+        "playwright": 9224,
+        "chrome_devtools": 9223,
+        "puppeteer": 9225
+      },
+      "status": "active",
+      "docker_running": true
+    },
+    {
+      "name": "SoftTrak-role-deletion",
+      "path": "/Users/arlenagreer/Github_Projects/SoftTrak-role-deletion",
+      "branch": "role-deletion",
+      "created": "2025-10-23T20:01:11Z",
+      "ports": {
+        "backend": 3002,
+        "frontend": 4003,
+        "database": 5436,
+        "playwright": 9225,
+        "chrome_devtools": 9224,
+        "puppeteer": 9226
+      },
+      "status": "active",
+      "docker_running": true
+    },
+    {
+      "name": "SoftTrak-issue-337-security-settings",
+      "path": "/Users/arlenagreer/Github_Projects/SoftTrak-issue-337-security-settings",
+      "branch": "fix/security-settings-persistence-337",
+      "created": "2025-10-23T20:07:11Z",
+      "ports": {
+        "backend": 3003,
+        "frontend": 4004,
+        "database": 5437,
+        "playwright": 9226,
+        "chrome_devtools": 9225,
+        "puppeteer": 9227
+      },
+      "status": "active",
+      "docker_running": true
+    },
+    {
+      "name": "SoftTrak-test-connectivity-fix",
+      "path": "/Users/arlenagreer/Github_Projects/SoftTrak-test-connectivity-fix",
+      "branch": "test-connectivity-fix",
+      "created": "2025-10-23T22:49:27Z",
+      "ports": {
+        "backend": 3004,
+        "frontend": 4005,
+        "database": 5438,
+        "playwright": 9227,
+        "chrome_devtools": 9226,
+        "puppeteer": 9228
+      },
+      "status": "active",
+      "docker_running": false
+    }
+  ]
 }

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "plugins": {
+    "document-skills@anthropic-agent-skills": {
+      "version": "unknown",
+      "installedAt": "2025-10-24T01:02:00.582Z",
+      "lastUpdated": "2025-10-24T01:02:00.582Z",
+      "installPath": "/Users/arlenagreer/.claude/plugins/marketplaces/anthropic-agent-skills/",
+      "gitCommitSha": "c74d647e56e6daa12029b6acb11a821348ad044b",
+      "isLocal": true
+    },
+    "example-skills@anthropic-agent-skills": {
+      "version": "unknown",
+      "installedAt": "2025-10-24T01:02:00.582Z",
+      "lastUpdated": "2025-10-24T01:02:00.582Z",
+      "installPath": "/Users/arlenagreer/.claude/plugins/marketplaces/anthropic-agent-skills/",
+      "gitCommitSha": "c74d647e56e6daa12029b6acb11a821348ad044b",
+      "isLocal": true
+    }
+  }
+}

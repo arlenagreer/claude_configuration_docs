@@ -1,7 +1,7 @@
 ---
 name: frontend-qc
 description: Performs comprehensive frontend quality assurance reviews using browser automation. Systematically tests UI elements, discovers and reports bugs to GitHub Issues, and provides improvement recommendations. Uses Chrome DevTools MCP for interactive testing. This skill should be used when performing quality assurance reviews of frontend UI components, testing user interfaces for bugs or usability issues, validating frontend implementations before deployment, or conducting systematic UI testing across multiple components.
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write
+allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write, Task
 ---
 
 # Frontend Quality Assurance

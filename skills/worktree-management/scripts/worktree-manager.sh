@@ -6,7 +6,7 @@
 set -e
 
 SKILL_DIR="$HOME/.claude/skills/worktree-management"
-TEMPLATES_DIR="$SKILL_DIR/templates"
+TEMPLATES_DIR="$SKILL_DIR/assets"
 WORKTREES_JSON="$SKILL_DIR/worktrees.json"
 PORTS_JSON="$SKILL_DIR/port-registry.json"
 
@@ -516,6 +516,43 @@ create_worktree() {
     echo "📋 Copying environment files..."
     if [ -f "$main_project/backend/.env" ]; then
         cp "$main_project/backend/.env" "$worktree_path/backend/.env"
+
+        # Update CORS allowed origins to include worktree frontend port
+        echo "🔧 Configuring CORS for worktree port $frontend_port..."
+        if grep -q "ALLOWED_ORIGINS=" "$worktree_path/backend/.env"; then
+            # Check if port already exists in ALLOWED_ORIGINS
+            if ! grep "ALLOWED_ORIGINS=" "$worktree_path/backend/.env" | grep -q "localhost:$frontend_port"; then
+                # Add worktree frontend port to ALLOWED_ORIGINS
+                sed -i.bak "s|\(ALLOWED_ORIGINS=.*\)|\1,http://localhost:$frontend_port|" "$worktree_path/backend/.env"
+                rm "$worktree_path/backend/.env.bak"
+                echo "   ✅ Added http://localhost:$frontend_port to ALLOWED_ORIGINS"
+            else
+                echo "   ✅ Port $frontend_port already in ALLOWED_ORIGINS"
+            fi
+        else
+            # ALLOWED_ORIGINS not found, add it with common ports + worktree port
+            echo "" >> "$worktree_path/backend/.env"
+            echo "# CORS Settings" >> "$worktree_path/backend/.env"
+            echo "ALLOWED_ORIGINS=http://localhost:4000,http://localhost:4001,http://localhost:4002,http://localhost:4003,http://localhost:4004,http://localhost:5173,http://localhost:3000,http://localhost:$frontend_port" >> "$worktree_path/backend/.env"
+            echo "   ✅ Created ALLOWED_ORIGINS with worktree port $frontend_port"
+        fi
+
+        # Also update cors.rb to include worktree frontend port in development defaults
+        if [ -f "$worktree_path/backend/config/initializers/cors.rb" ]; then
+            echo "🔧 Updating CORS initializer for worktree port $frontend_port..."
+            # Check if the worktree port is already in the cors.rb defaults
+            if ! grep -A2 "Rails.env.development?" "$worktree_path/backend/config/initializers/cors.rb" | grep -q "localhost:$frontend_port"; then
+                # Find the line with the development defaults array and add the worktree port
+                sed -i.bak "/allowed_origins = \[.*localhost:4003/s|\]|, \"http://localhost:$frontend_port\"]|" "$worktree_path/backend/config/initializers/cors.rb"
+                rm "$worktree_path/backend/config/initializers/cors.rb.bak"
+                echo "   ✅ Added http://localhost:$frontend_port to cors.rb development defaults"
+            else
+                echo "   ✅ Port $frontend_port already in cors.rb development defaults"
+            fi
+        else
+            echo "   ⚠️  cors.rb not found - CORS may need manual configuration"
+        fi
+
         echo "   ✅ Copied backend/.env"
     else
         echo "   ⚠️  backend/.env not found in main project"
@@ -523,9 +560,42 @@ create_worktree() {
 
     if [ -f "$main_project/frontend/.env" ]; then
         cp "$main_project/frontend/.env" "$worktree_path/frontend/.env"
+
+        # Update VITE_API_BASE_URL to point to worktree backend port
+        echo "🔧 Configuring frontend API URL for backend port $backend_port..."
+        if grep -q "VITE_API_BASE_URL=" "$worktree_path/frontend/.env"; then
+            sed -i.bak "s|VITE_API_BASE_URL=http://localhost:[0-9]*/api/v1|VITE_API_BASE_URL=http://localhost:$backend_port/api/v1|g" "$worktree_path/frontend/.env"
+            rm "$worktree_path/frontend/.env.bak"
+            echo "   ✅ Updated VITE_API_BASE_URL to http://localhost:$backend_port/api/v1"
+        else
+            echo "" >> "$worktree_path/frontend/.env"
+            echo "# Worktree-specific API URL" >> "$worktree_path/frontend/.env"
+            echo "VITE_API_BASE_URL=http://localhost:$backend_port/api/v1" >> "$worktree_path/frontend/.env"
+            echo "   ✅ Added VITE_API_BASE_URL=http://localhost:$backend_port/api/v1"
+        fi
+
         echo "   ✅ Copied frontend/.env"
     else
         echo "   ⚠️  frontend/.env not found in main project"
+    fi
+
+    # Also update frontend/.env.development if it exists
+    if [ -f "$main_project/frontend/.env.development" ]; then
+        cp "$main_project/frontend/.env.development" "$worktree_path/frontend/.env.development"
+
+        echo "🔧 Configuring frontend/.env.development for backend port $backend_port..."
+        if grep -q "VITE_API_BASE_URL=" "$worktree_path/frontend/.env.development"; then
+            sed -i.bak "s|VITE_API_BASE_URL=http://localhost:[0-9]*/api/v1|VITE_API_BASE_URL=http://localhost:$backend_port/api/v1|g" "$worktree_path/frontend/.env.development"
+            rm "$worktree_path/frontend/.env.development.bak"
+            echo "   ✅ Updated .env.development VITE_API_BASE_URL to http://localhost:$backend_port/api/v1"
+        else
+            echo "" >> "$worktree_path/frontend/.env.development"
+            echo "# Worktree-specific API URL" >> "$worktree_path/frontend/.env.development"
+            echo "VITE_API_BASE_URL=http://localhost:$backend_port/api/v1" >> "$worktree_path/frontend/.env.development"
+            echo "   ✅ Added VITE_API_BASE_URL to .env.development"
+        fi
+
+        echo "   ✅ Copied and configured frontend/.env.development"
     fi
 
     if [ -f "$main_project/.env" ]; then

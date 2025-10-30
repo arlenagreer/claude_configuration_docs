@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #181B24; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background-image: url('gradient-content.png');
+  background-size: cover;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+.header-bar {
+  background: #B165FB;
+  width: 100%;
+  height: 60pt;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.content {
+  margin: 80pt 50pt 60pt 50pt;
+  flex: 1;
+}
+h2 {
+  color: #FFFFFF;
+  font-size: 36pt;
+  font-weight: bold;
+  margin: 0 0 30pt 0;
+}
+.grid {
+  display: flex;
+  gap: 25pt;
+}
+.column {
+  flex: 1;
+}
+.service-box {
+  background: rgba(64, 105, 91, 0.3);
+  padding: 10pt;
+  border-radius: 6pt;
+  margin-bottom: 10pt;
+  border-left: 3pt solid #40695B;
+}
+.service-title {
+  color: #40695B;
+  font-size: 16pt;
+  font-weight: bold;
+  margin: 0 0 6pt 0;
+}
+p {
+  color: #FFFFFF;
+  font-size: 13pt;
+  margin: 0;
+  line-height: 1.3;
+}
+.note {
+  color: #B165FB;
+  font-size: 12pt;
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+<div class="header-bar"></div>
+<div class="content">
+  <h2>AWS Implementation</h2>
+  <div class="grid">
+    <div class="column">
+      <div class="service-box">
+        <p class="service-title">Lambda</p>
+        <p>Via API Gateway</p>
+        <p class="note">Use IAM authorization</p>
+      </div>
+      <div class="service-box">
+        <p class="service-title">Step Functions</p>
+        <p>Or EventBridge</p>
+      </div>
+      <div class="service-box">
+        <p class="service-title">Bedrock</p>
+        <p>AI/ML service</p>
+      </div>
+    </div>
+    <div class="column">
+      <div class="service-box">
+        <p class="service-title">GitHub</p>
+        <p>CodeCommit deprecated</p>
+      </div>
+      <div class="service-box">
+        <p class="service-title">Auxiliary Services</p>
+        <p>DynamoDB</p>
+        <p>S3</p>
+        <p>Secrets Manager</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

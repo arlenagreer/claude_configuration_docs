@@ -52,7 +52,7 @@ services:
       # Use named volume for node_modules to preserve container dependencies
       - frontend_node_modules_{{WORKTREE_NAME}}:/app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:{{BACKEND_PORT}}
+      - VITE_API_BASE_URL=http://localhost:{{BACKEND_PORT}}/api/v1
     depends_on:
       - backend
 
@@ -73,6 +73,28 @@ services:
       timeout: 5s
       retries: 5
 
+  chrome-devtools-mcp:
+    image: zenika/alpine-chrome:latest
+    container_name: chrome-devtools-mcp-{{WORKTREE_NAME}}
+    ports:
+      - "{{CHROME_DEVTOOLS_PORT}}:9222"
+    volumes:
+      - chrome_devtools_data_{{WORKTREE_NAME}}:/data
+    environment:
+      - CHROME_REMOTE_DEBUGGING_PORT=9222
+      - CHROME_ARGS=--headless --disable-gpu --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --user-data-dir=/data --no-first-run --disable-dev-shm-usage --no-sandbox
+    command: >
+      chromium-browser
+      --headless
+      --disable-gpu
+      --remote-debugging-address=0.0.0.0
+      --remote-debugging-port=9222
+      --user-data-dir=/data
+      --no-first-run
+      --disable-dev-shm-usage
+      --no-sandbox
+    restart: unless-stopped
+
   redis:
     image: redis:7-alpine
     container_name: redis-{{WORKTREE_NAME}}
@@ -87,6 +109,7 @@ volumes:
   db_data_{{WORKTREE_NAME}}:
   redis_data_{{WORKTREE_NAME}}:
   frontend_node_modules_{{WORKTREE_NAME}}:
+  chrome_devtools_data_{{WORKTREE_NAME}}:
 
 # Note: This file is NOT committed to Git
 # It is generated per-worktree for development isolation

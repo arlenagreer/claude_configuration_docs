@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #181B24; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background-image: url('gradient-content.png');
+  background-size: cover;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+.header-bar {
+  background: #B165FB;
+  width: 100%;
+  height: 60pt;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.content {
+  margin: 80pt 50pt 60pt 50pt;
+  flex: 1;
+}
+h2 {
+  color: #FFFFFF;
+  font-size: 32pt;
+  font-weight: bold;
+  margin: 0 0 20pt 0;
+}
+.grid {
+  display: flex;
+  gap: 30pt;
+}
+.column {
+  flex: 1;
+}
+.category {
+  background: rgba(64, 105, 91, 0.3);
+  padding: 12pt;
+  border-radius: 6pt;
+  margin-bottom: 12pt;
+  border-left: 3pt solid #40695B;
+}
+.category-title {
+  color: #40695B;
+  font-size: 16pt;
+  font-weight: bold;
+  margin: 0 0 8pt 0;
+}
+ul {
+  margin: 0;
+  padding-left: 18pt;
+}
+li {
+  color: #FFFFFF;
+  font-size: 13pt;
+  margin-bottom: 5pt;
+  line-height: 1.2;
+}
+</style>
+</head>
+<body>
+<div class="header-bar"></div>
+<div class="content">
+  <h2>SuperClaude Framework</h2>
+  <div class="grid">
+    <div class="column">
+      <div class="category">
+        <p class="category-title">Commands</p>
+        <ul>
+          <li>build, implement</li>
+          <li>analyze, troubleshoot</li>
+          <li>improve, cleanup</li>
+          <li>document, explain</li>
+        </ul>
+      </div>
+      <div class="category">
+        <p class="category-title">Personas</p>
+        <ul>
+          <li>architect, frontend, backend</li>
+          <li>security, analyzer, qa</li>
+        </ul>
+      </div>
+    </div>
+    <div class="column">
+      <div class="category">
+        <p class="category-title">Modifiers</p>
+        <ul>
+          <li>--think, --ultrathink</li>
+          <li>--wave-mode</li>
+          <li>--delegate</li>
+        </ul>
+      </div>
+      <div class="category">
+        <p class="category-title">Workflows</p>
+        <ul>
+          <li>Automatable with Skills</li>
+          <li>brainstorm → workflow</li>
+          <li>test → git → document</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -523,14 +523,15 @@ If debugging from GitHub issue:
 # Post resolution comment with report
 gh issue comment <number> --body "[report-content]"
 
-# Add resolved label
+# Add resolved label to indicate fix has been applied and verified
 gh issue edit <number> --add-label "resolved-by-claude"
-
-# Close issue with verification
-gh issue close <number> --comment "Issue verified resolved in browser. All verification criteria passed."
 
 # Remove automated-debug label if present
 gh issue edit <number> --remove-label "automated-debug"
+
+# DO NOT automatically close the issue
+# Let human developers review the fix and close manually
+# This ensures proper validation and prevents premature closure
 ```
 
 ### Step 3: Session Cleanup

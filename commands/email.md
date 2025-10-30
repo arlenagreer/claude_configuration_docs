@@ -4,10 +4,13 @@ Send an email: $ARGUMENTS
 
 Steps:
 
-1. **Read the email skill**: Read `~/.claude/skills/email/email.md` for complete instructions
+1. **Read the email skill documentation**:
+   - Read `~/.claude/skills/email/SKILL.md` for complete workflow instructions
+   - Read `~/.claude/skills/email/references/seasonal_themes.md` for detailed theme specifications
+   - Read `~/.claude/skills/email/references/writing_style_guide.md` for Arlen's writing style
 2. **Parse the request**: Extract recipient, subject, and message from $ARGUMENTS
 3. **Contact lookup** (if recipient is a name):
-   - Run `~/.claude/skills/email/lookup_contact_email.rb --name "First Last"`
+   - Run `~/.claude/skills/email/scripts/lookup_contact_email.rb --name "First Last"`
    - Check JSON response status field
    - If status = "error": STOP and prompt user for email address
    - If status = "success": Use the email address returned
@@ -15,8 +18,14 @@ Steps:
      - Ed Korkuch → ekorkuch@versacomputing.com
    - "bcc me" → Add arlenagreer@gmail.com to BCC
 4. **Security review**: Scan content for passwords, API keys, credentials, tokens - redact if found
-5. **Determine theme**: Based on current date (from <env>), apply seasonal or holiday HTML theme
-6. **Compose email**: Using Arlen's writing style (professional, direct, helpful)
+5. **Determine theme**:
+   - Check current date from <env>
+   - Check if date matches any holiday in seasonal_themes.md (holidays override seasonal themes)
+   - Apply complete theme specifications from seasonal_themes.md including:
+     * Exact color palette (primary, secondary, accent colors)
+     * All styling elements listed for that theme
+     * Mood/tone specified for that theme
+6. **Compose email**: Using Arlen's writing style (professional, direct, helpful) from writing_style_guide.md
 7. **Send via Gmail MCP**: Use `mcp__gmail__send_email` with HTML formatting
 8. **Confirm**: Report success or error
 
