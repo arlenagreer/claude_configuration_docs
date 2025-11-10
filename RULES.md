@@ -296,3 +296,4 @@ Task type → Best tool:
 - Descriptive naming conventions
 - MCP tools over basic alternatives
 - Batch operations when possible
+- Please remember: When drafting any sort of document, you MUST check the system clock to determine the current time and date.  Do NOT assume that the date is the last day of your training

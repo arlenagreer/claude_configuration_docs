@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# Ruby 3.3.7 required for google-apis-people_v1 gem
 
 # Google Contacts Email Lookup Script
 #

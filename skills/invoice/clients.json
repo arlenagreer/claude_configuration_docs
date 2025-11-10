@@ -1,0 +1,94 @@
+{
+  "clients": [
+    {
+      "name": "American Laboratory Trading",
+      "short_name": "AmericanLab",
+      "invoice_prefix": "INV",
+      "invoice_type": "hourly",
+      "company_name": "American Laboratory Trading",
+      "attention": "Accounts Payable",
+      "address_line1": "12 Colton Road",
+      "city_state_zip": "East Lyme, CT 06333",
+      "project_reference": "System Maintenance and Development",
+      "hourly_rate": 100.00,
+      "last_invoice_number": 11,
+      "last_invoice_date": "2025-11-01",
+      "payment_terms_days": 30
+    },
+    {
+      "name": "Empirico",
+      "short_name": "Empirico",
+      "invoice_prefix": "EMP",
+      "invoice_type": "subscription",
+      "company_name": "Empirico, Inc.",
+      "attention": "Accounts Payable",
+      "address_line1": "4660 La Jolla Village Drive, #100",
+      "city_state_zip": "San Diego, CA 92122",
+      "subscription_name": "LabDesk Subscription",
+      "subscription_amount": 500.00,
+      "last_invoice_number": 11,
+      "last_invoice_date": "2025-11-01",
+      "payment_terms_days": 30
+    },
+    {
+      "name": "Versa Computing",
+      "short_name": "VersaComputing",
+      "invoice_prefix": "VER",
+      "invoice_type": "hourly",
+      "company_name": "Versa Computing",
+      "attention": "Accounts Payable",
+      "address_line1": "5120 Shoreham Pl #260",
+      "city_state_zip": "San Diego, CA 92122",
+      "project_reference": "System Maintenance and Development",
+      "hourly_rate": 100.00,
+      "last_invoice_number": 11,
+      "last_invoice_date": "2025-11-01",
+      "payment_terms_days": 30,
+      "requires_project_column": true
+    },
+    {
+      "name": "Arcturus",
+      "short_name": "Arcturus",
+      "invoice_prefix": "ARC",
+      "invoice_type": "subscription",
+      "subscription_name": "Monthly Subscription",
+      "subscription_amount": 1250.00,
+      "last_invoice_number": 0,
+      "last_invoice_date": null,
+      "payment_terms_days": 30
+    },
+    {
+      "name": "Dreamanager",
+      "short_name": "Dreamanager",
+      "invoice_prefix": "DRM",
+      "invoice_type": "hourly",
+      "hourly_rate": 0.00,
+      "last_invoice_number": 0,
+      "last_invoice_date": null,
+      "payment_terms_days": 30,
+      "notes": "Equity deal - time tracking only"
+    },
+    {
+      "name": "LabDesk",
+      "short_name": "LabDesk",
+      "invoice_prefix": "LAB",
+      "invoice_type": "hourly",
+      "hourly_rate": 0.00,
+      "last_invoice_number": 0,
+      "last_invoice_date": null,
+      "payment_terms_days": 30,
+      "notes": "Equity deal - time tracking only"
+    },
+    {
+      "name": "Athelytix",
+      "short_name": "Athelytix",
+      "invoice_prefix": "ATH",
+      "invoice_type": "hourly",
+      "hourly_rate": 0.00,
+      "last_invoice_number": 0,
+      "last_invoice_date": null,
+      "payment_terms_days": 30,
+      "notes": "Equity deal - time tracking only"
+    }
+  ]
+}

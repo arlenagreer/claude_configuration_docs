@@ -1,4 +1,4 @@
-# Deep Research Configuration
+# Deep Research Configuration - Complete Reference
 
 ## Default Settings
 

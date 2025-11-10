@@ -1,8 +1,8 @@
 ---
 name: email
-description: Send and draft professional emails with seasonal HTML formatting, authentic writing style, contact lookup via Google Contacts, security-first approach, and Gmail MCP integration with Himalaya CLI fallback. This skill should be used for ALL email operations (mandatory per RULES.md).
+description: Send and draft professional emails with seasonal HTML formatting, authentic writing style, contact lookup via Google Contacts, security-first approach, and Google Gmail API via Ruby CLI. This skill should be used for ALL email operations (mandatory per RULES.md).
 category: communication
-version: 2.3.0
+version: 3.0.0
 ---
 
 # Email Agent Skill
@@ -12,7 +12,7 @@ version: 2.3.0
 **CRITICAL: Before proceeding with ANY email operation, verify this skill loaded correctly:**
 
 1. ✅ This SKILL.md file loaded successfully
-2. ✅ You can see version 2.4.0 at the bottom of this file
+2. ✅ You can see version 2.5.0 at the bottom of this file
 3. ✅ You can see the preferred email addresses section (Mark, Julie, Rose)
 4. ✅ You can see the Core Workflow section with recipient resolution
 
@@ -134,261 +134,11 @@ These contacts have preferred email addresses that ALWAYS take precedence over G
 - Never assume dates from knowledge cutoff
 
 **Apply Theme**:
-- **🎃 CRITICAL: HALLOWEEN THEME MANDATORY (October 30 - November 1, 2025)**: Use sophisticated Halloween atmospheric theme for ALL emails during this period
-- After November 1, 2025: Check for matching national holiday (takes priority)
+- Check for matching national holiday (takes priority)
 - Otherwise use seasonal theme based on date
 - See `references/seasonal_themes.md` for detailed styling
 
-**🎃 HALLOWEEN THEME ENFORCEMENT**:
-- **Dates**: October 30, October 31, AND November 1, 2025
-- **Mandatory**: ALL outgoing emails MUST use Halloween theme during this period
-- **No exceptions**: Even routine business emails use the Halloween theme
-- **Remove this section**: On November 2, 2025
-
-**🎃 Special Halloween Theme (October 30 - November 1, 2025)**:
-
-**CRITICAL**: This theme MUST be used for ALL outgoing emails on October 30, October 31, AND November 1, 2025. Remove this entire Halloween theme section on November 2nd, 2025.
-
-Use this sophisticated, mature HTML theme:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{SUBJECT}}</title>
-  <style>
-    @keyframes moonGlow {
-      0%, 100% {
-        box-shadow: 0 0 40px rgba(255, 255, 255, 0.4),
-                    0 0 80px rgba(255, 255, 255, 0.2),
-                    0 0 120px rgba(255, 255, 255, 0.1);
-      }
-      50% {
-        box-shadow: 0 0 60px rgba(255, 255, 255, 0.6),
-                    0 0 100px rgba(255, 255, 255, 0.3),
-                    0 0 160px rgba(255, 255, 255, 0.15);
-      }
-    }
-
-    @keyframes cloudDrift {
-      0% { transform: translateX(0); opacity: 0.8; }
-      50% { opacity: 0.4; }
-      100% { transform: translateX(-200px); opacity: 0.8; }
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(0.8); }
-    }
-
-    @keyframes drift {
-      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-    }
-
-    @keyframes floatSlow {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: radial-gradient(ellipse at center, #1a1a2e 0%, #000000 100%);
-      min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    .moon {
-      position: fixed;
-      top: 80px;
-      right: 100px;
-      width: 120px;
-      height: 120px;
-      background: radial-gradient(circle at 30% 30%, #ffffff, #f5f5f5, #e0e0e0);
-      border-radius: 50%;
-      z-index: 1;
-      animation: moonGlow 4s ease-in-out infinite;
-    }
-
-    .moon::before {
-      content: '';
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      background: radial-gradient(circle, rgba(180, 180, 180, 0.4), transparent);
-      border-radius: 50%;
-      top: 35%;
-      left: 45%;
-    }
-
-    .moon::after {
-      content: '';
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      background: radial-gradient(circle, rgba(200, 200, 200, 0.3), transparent);
-      border-radius: 50%;
-      top: 55%;
-      left: 25%;
-    }
-
-    .stars {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: white;
-      border-radius: 50%;
-      animation: twinkle 3s ease-in-out infinite;
-    }
-
-    .cloud {
-      position: fixed;
-      font-size: 80px;
-      opacity: 0.2;
-      z-index: 2;
-      animation: cloudDrift 40s linear infinite;
-    }
-
-    .cloud-1 { top: 100px; right: -100px; animation-delay: 0s; }
-    .cloud-2 { top: 200px; right: -100px; animation-delay: 10s; }
-
-    .leaf {
-      position: fixed;
-      font-size: 30px;
-      animation: drift 30s linear infinite;
-      z-index: 0;
-    }
-
-    .fog {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 200px;
-      background: linear-gradient(to top, rgba(138, 43, 226, 0.3), transparent);
-      z-index: 0;
-    }
-
-    .email-container {
-      position: relative;
-      z-index: 10;
-      max-width: 600px;
-      margin: 60px auto;
-      padding: 20px;
-    }
-
-    .main-content {
-      background: linear-gradient(135deg,
-        rgba(25, 20, 35, 0.92),
-        rgba(45, 25, 55, 0.92),
-        rgba(35, 25, 45, 0.92));
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      padding: 50px 40px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      animation: fadeIn 1s ease-out;
-    }
-
-    h1 {
-      color: #b794f6;
-      font-family: 'Garamond', serif;
-      font-size: 28px;
-      margin: 0 0 30px 0;
-      text-align: center;
-      font-weight: 300;
-      letter-spacing: 2px;
-    }
-
-    p {
-      color: #e0e0e0;
-      line-height: 1.8;
-      margin: 0 0 20px 0;
-      font-size: 16px;
-    }
-
-    .signature {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      color: #d0d0d0;
-      font-size: 14px;
-    }
-
-    @media only screen and (max-width: 600px) {
-      .email-container { padding: 15px; }
-      .main-content { padding: 30px 25px; }
-      .moon { width: 80px; height: 80px; top: 40px; right: 40px; }
-    }
-  </style>
-</head>
-<body>
-  <div class="moon"></div>
-
-  <div class="stars">
-    <div class="star" style="top: 15%; left: 20%; animation-delay: 0s;"></div>
-    <div class="star" style="top: 25%; left: 80%; animation-delay: 0.5s;"></div>
-    <div class="star" style="top: 40%; left: 10%; animation-delay: 1s;"></div>
-    <div class="star" style="top: 60%; left: 70%; animation-delay: 1.5s;"></div>
-    <div class="star" style="top: 70%; left: 30%; animation-delay: 2s;"></div>
-    <div class="star" style="top: 35%; left: 50%; animation-delay: 0.7s;"></div>
-    <div class="star" style="top: 80%; left: 60%; animation-delay: 2.5s;"></div>
-    <div class="star" style="top: 20%; left: 45%; animation-delay: 1.2s;"></div>
-    <div class="star" style="top: 50%; left: 85%; animation-delay: 1.8s;"></div>
-    <div class="star" style="top: 65%; left: 15%; animation-delay: 2.2s;"></div>
-    <div class="star" style="top: 10%; left: 65%; animation-delay: 0.3s;"></div>
-    <div class="star" style="top: 75%; left: 40%; animation-delay: 2.7s;"></div>
-  </div>
-
-  <div class="cloud cloud-1">☁️</div>
-  <div class="cloud cloud-2">☁️</div>
-
-  <div class="leaf" style="left: 10%; animation-delay: 0s;">🍂</div>
-  <div class="leaf" style="left: 30%; animation-delay: 5s;">🍁</div>
-  <div class="leaf" style="left: 50%; animation-delay: 10s;">🍂</div>
-  <div class="leaf" style="left: 70%; animation-delay: 15s;">🍁</div>
-  <div class="leaf" style="left: 90%; animation-delay: 20s;">🍂</div>
-
-  <div class="fog"></div>
-
-  <div class="email-container">
-    <div class="main-content">
-      <p>Hi {{RECIPIENT_NAME}},</p>
-
-      {{CONTENT}}
-
-      <div class="signature">
-        <p>-Arlen</p>
-      </div>
-    </div>
-  </div>
-</body>
-</html>
-```
-
-**Theme Features**:
-- Sophisticated dark atmospheric design with purple/violet accents
-- Detailed moon with realistic glow and crater effects
-- Drifting clouds, twinkling stars, floating autumn leaves
-- Elegant typography with proper spacing
-- Mobile-responsive with adaptive sizing
-- No explicit "Halloween" or holiday references (mature thematic approach)
-
-**Season Ranges** (for non-special dates):
+**Season Ranges**:
 - Spring: March 20 - June 20
 - Summer: June 21 - September 22
 - Fall: September 23 - December 20
@@ -440,49 +190,98 @@ See `references/writing_style_guide.md` for:
 
 ### 6. Send or Draft
 
-**Primary Method: Gmail MCP**
+**Primary Method: Google Gmail API via CLI**
 
-Available tools:
-- `mcp__gmail__send_email` - Send immediately
-- `mcp__gmail__draft_email` - Create draft for review
+Use the `gmail_manager.rb` script for all email operations:
 
-Example:
-```javascript
-mcp__gmail__send_email({
-  to: ["recipient1@example.com", "recipient2@example.com"],
-  subject: "Project Update",
-  htmlBody: "<html>...</html>",
-  mimeType: "text/html",
-  bcc: ["arlenagreer@gmail.com"] // MANDATORY for 2+ recipients - ALWAYS include automatically
-})
-```
-
-**Fallback Method: Himalaya CLI**
-
-If Gmail MCP unavailable, use Himalaya CLI.
-
-See `references/himalaya_cli.md` for:
-- Configuration details
-- Send commands (plain text and HTML)
-- Troubleshooting
-
-Basic HTML send:
+**Send Email**:
 ```bash
-himalaya message send << 'EOF'
-From: arlenagreer@gmail.com
-To: recipient@example.com
-Subject: Subject Here
-MIME-Version: 1.0
-Content-Type: text/html; charset=utf-8
-
-<!DOCTYPE html>
-<html>...</html>
-EOF
+echo '{
+  "to": ["recipient@example.com"],
+  "subject": "Subject Line",
+  "body_html": "<html>...</html>",
+  "cc": [],
+  "bcc": []
+}' | ~/.claude/skills/email/scripts/gmail_manager.rb send
 ```
+
+**Create Draft**:
+```bash
+echo '{
+  "to": ["recipient@example.com"],
+  "subject": "Draft Subject",
+  "body_html": "<html>...</html>",
+  "cc": [],
+  "bcc": []
+}' | ~/.claude/skills/email/scripts/gmail_manager.rb draft
+```
+
+**Important Notes**:
+- BCC to `arlenagreer@gmail.com` is **automatically added** by the script
+- No need to manually include in BCC field - script handles it
+- For multiple recipients, just list all addresses in the `to` array
+- JSON input via STDIN, JSON output via STDOUT
+
+**First-Time OAuth Setup**:
+```bash
+# Script will prompt with authorization URL if not authenticated
+~/.claude/skills/email/scripts/gmail_manager.rb send
+
+# Follow the instructions:
+# 1. Visit the provided authorization URL
+# 2. Grant access to Gmail, Calendar, and Contacts
+# 3. Copy the authorization code
+# 4. Complete authorization:
+~/.claude/skills/email/scripts/gmail_manager.rb auth <YOUR_CODE>
+```
+
+**OAuth Scopes**:
+- `https://www.googleapis.com/auth/gmail.modify` - Send, draft, and read emails
+- `https://www.googleapis.com/auth/calendar` - Calendar operations (shared token)
+- `https://www.googleapis.com/auth/contacts` - Contact lookups (shared token)
+
+**Shared Token**: Uses the same OAuth token as calendar and contacts skills at `~/.claude/.google/token.json`
 
 ## Bundled Resources
 
 ### Scripts
+
+**`scripts/gmail_manager.rb`**
+- Send and draft emails via Google Gmail API
+- Automatic BCC to arlenagreer@gmail.com
+- Shared OAuth token with calendar and contacts skills
+- Requires: `~/.claude/.google/client_secret.json` and `~/.claude/.google/token.json`
+
+**Commands**:
+```bash
+# Complete OAuth authorization
+gmail_manager.rb auth <code>
+
+# Send email (JSON input via STDIN)
+echo '{"to":["test@example.com"],"subject":"Test","body_html":"<p>Hello</p>"}' | gmail_manager.rb send
+
+# Create draft (JSON input via STDIN)
+echo '{"to":["test@example.com"],"subject":"Draft","body_html":"<p>Draft</p>"}' | gmail_manager.rb draft
+
+# List messages (optional query parameter)
+echo '{"query":"is:unread","max_results":10}' | gmail_manager.rb list
+```
+
+**Output Format**:
+- Success: `{"status": "success", "operation": "send", "message_id": "...", "thread_id": "...", "recipients": {...}}`
+- Error: `{"status": "error", "error_code": "...", "message": "..."}`
+
+**Exit Codes**:
+- 0: Success
+- 1: Operation failed
+- 2: Authentication error
+- 3: API error
+- 4: Invalid arguments
+
+**OAuth Scopes**:
+- `https://www.googleapis.com/auth/gmail.modify`
+- `https://www.googleapis.com/auth/calendar`
+- `https://www.googleapis.com/auth/contacts`
 
 **`scripts/lookup_contact_email.rb`**
 - Query Google Contacts by name
@@ -598,6 +397,8 @@ EOF
 
 ## Version History
 
+- **3.0.0** (2025-11-09) - Migrated from Gmail MCP server integration to Google CLI pattern using gmail_manager.rb Ruby script. Now uses google-apis-gmail_v1 gem with AUTH_GMAIL_MODIFY scope for direct Gmail API access. Shares OAuth token (~/.claude/.google/token.json) with calendar and contacts skills. Automatic BCC injection handled by script. Removed Himalaya CLI fallback references. Future-ready for email reading capabilities.
+- **2.5.0** (2025-11-04) - Removed Halloween atmospheric theme as scheduled. Emails now return to standard seasonal themes (Fall theme for current period: September 23 - December 20).
 - **2.4.0** (2025-10-30) - Added special Halloween atmospheric theme for October 30-31, 2025. Sophisticated dark design with moon, stars, clouds, and autumn leaves. Theme automatically applies to all outgoing emails on these dates. Instructions included to remove theme on November 1st, 2025.
 - **2.3.0** (2025-10-30) - Added automatic BCC default behavior: arlenagreer@gmail.com is now automatically included in BCC field when sending to 2+ recipients (no user request needed). Single-recipient emails still require explicit "bcc me" request.
 - **2.2.0** (2025-10-29) - Enhanced recipient resolution with preferred email addresses: Mark Whitney, Julie Whitney, and Rose Fletcher now use @dreamanager.com addresses. Added context-sensitive routing for Ed Korkuch (ed@dreamanager.com for Dreamanager project, ekorkuch@versacomputing.com for other topics).

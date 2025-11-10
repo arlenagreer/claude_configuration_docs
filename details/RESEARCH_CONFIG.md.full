@@ -1,0 +1,83 @@
+# Deep Research Configuration
+
+**Full Documentation**: @details/RESEARCH_CONFIG.md (load on-demand)
+
+## Core Defaults
+
+```yaml
+research_defaults:
+  planning_strategy: unified
+  max_hops: 5
+  confidence_threshold: 0.7
+  memory_enabled: true
+  parallelization: true
+  parallel_first: true  # MANDATORY DEFAULT
+  sequential_override_requires_justification: true
+
+parallel_execution_rules:
+  DEFAULT_MODE: PARALLEL  # EMPHASIZED
+
+  mandatory_parallel:
+    - "Multiple search queries"
+    - "Batch URL extractions"
+    - "Independent analyses"
+    - "Non-dependent hops"
+
+  sequential_only_with_justification:
+    - reason: "Explicit dependency"
+    - reason: "Resource constraint"
+    - reason: "User requirement"
+
+  parallel_optimization:
+    batch_sizes: {searches: 5, extractions: 3, analyses: 2}
+    intelligent_grouping: {by_domain: true, by_complexity: true}
+```
+
+## Planning Strategies
+
+```yaml
+planning_only:
+  clarification: false
+  execution: immediate
+
+intent_planning:
+  clarification: true
+  max_questions: 3
+  execution: after_clarification
+
+unified:
+  clarification: optional
+  plan_presentation: true
+  user_feedback: true
+  execution: after_confirmation
+```
+
+## Research Depth Profiles
+
+```yaml
+quick: {max_sources: 10, max_hops: 1, time_limit: 2min, confidence_target: 0.6}
+standard: {max_sources: 20, max_hops: 3, time_limit: 5min, confidence_target: 0.7}
+deep: {max_sources: 40, max_hops: 4, time_limit: 8min, confidence_target: 0.8}
+exhaustive: {max_sources: 50+, max_hops: 5, time_limit: 10min, confidence_target: 0.9}
+```
+
+## Tool Coordination
+
+```yaml
+tool_coordination:
+  discovery_primary: tavily
+  extraction_smart_routing: true
+  reasoning_engine: sequential
+  memory_backend: serena
+  parallel_tool_calls: true
+```
+
+## Quick Reference
+
+**Source Credibility**: 4-tier system (0.9-1.0 = academic/official, 0.3-0.5 = forums/blogs)
+**Hop Patterns**: Entity expansion, concept deepening, temporal progression, causal chain
+**Extraction Routing**: Tavily (static), Playwright (dynamic), Context7 (docs), Native (local)
+**Replanning Triggers**: Confidence <0.6, time >70%, contradictions >30%
+**Output Formats**: Summary (500 words), Report (detailed), Academic (formal)
+
+For complete details see @details/RESEARCH_CONFIG.md

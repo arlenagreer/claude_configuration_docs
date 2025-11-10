@@ -1,35 +1,19 @@
 {
 	"mcpServers": {
-		"magic": {
+		"serena": {
+			"comment": "ALWAYS ENABLED: Essential for symbol operations and project memory",
+			"disabled": false,
 			"command": "docker",
 			"args": [
 				"exec",
 				"-i",
-				"magic-mcp",
-				"npx",
-				"@21st-dev/magic"
-			]
-		},
-		"gmail": {
-			"command": "docker",
-			"args": [
-				"exec",
-				"-i",
-				"gmail-mcp",
-				"gmail-mcp"
-			]
-		},
-		"tavily": {
-			"command": "docker",
-			"args": [
-				"exec",
-				"-i",
-				"tavily-mcp",
-				"npx",
-				"tavily-mcp"
+				"serena-mcp",
+				"serena-mcp-server"
 			]
 		},
 		"sequential-thinking": {
+			"comment": "ON-DEMAND: Enable with --seq flag for complex analysis",
+			"disabled": true,
 			"command": "docker",
 			"args": [
 				"exec",
@@ -39,26 +23,9 @@
 				"sequential-thinking-mcp"
 			]
 		},
-		"morphllm-fast-apply": {
-			"command": "docker",
-			"args": [
-				"exec",
-				"-i",
-				"morphllm-fast-apply-mcp",
-				"npx",
-				"@morph-llm/morph-fast-apply"
-			]
-		},
-		"serena": {
-			"command": "docker",
-			"args": [
-				"exec",
-				"-i",
-				"serena-mcp",
-				"serena-mcp-server"
-			]
-		},
 		"context7": {
+			"comment": "ON-DEMAND: Enable with --c7 flag for documentation lookups",
+			"disabled": true,
 			"command": "docker",
 			"args": [
 				"run",
@@ -71,7 +38,21 @@
 				"context7-mcp:latest"
 			]
 		},
+		"magic": {
+			"comment": "ON-DEMAND: Enable with --magic flag for UI component generation",
+			"disabled": true,
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"magic-mcp",
+				"npx",
+				"@21st-dev/magic"
+			]
+		},
 		"playwright": {
+			"comment": "ON-DEMAND: Enable with --play flag for E2E testing",
+			"disabled": true,
 			"command": "docker",
 			"args": [
 				"exec",
@@ -82,6 +63,8 @@
 			]
 		},
 		"chrome-devtools": {
+			"comment": "ON-DEMAND: Enable for frontend debugging",
+			"disabled": true,
 			"command": "docker",
 			"args": [
 				"exec",
@@ -89,6 +72,30 @@
 				"chrome-devtools-mcp",
 				"npx",
 				"chrome-devtools-mcp"
+			]
+		},
+		"tavily": {
+			"comment": "ON-DEMAND: Enable for web research tasks",
+			"disabled": true,
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"tavily-mcp",
+				"npx",
+				"tavily-mcp"
+			]
+		},
+		"morphllm-fast-apply": {
+			"comment": "ON-DEMAND: Enable for bulk code transformations",
+			"disabled": true,
+			"command": "docker",
+			"args": [
+				"exec",
+				"-i",
+				"morphllm-fast-apply-mcp",
+				"npx",
+				"@morph-llm/morph-fast-apply"
 			]
 		}
 	}

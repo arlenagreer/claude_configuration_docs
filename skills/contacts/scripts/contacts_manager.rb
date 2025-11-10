@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+# Ruby 3.3.7 required for google-apis-people_v1 gem
 
 # Google Contacts Manager Script
 #
@@ -12,14 +13,16 @@ require 'optparse'
 require 'json'
 require 'fileutils'
 require 'google/apis/people_v1'
+require 'google/apis/calendar_v3'
 require 'googleauth'
 require 'googleauth/stores/file_token_store'
 
 # Script version
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 # Configuration constants
 CONTACTS_SCOPE = Google::Apis::PeopleV1::AUTH_CONTACTS
+CALENDAR_SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR
 CREDENTIALS_PATH = File.join(Dir.home, '.claude', '.google', 'client_secret.json')
 TOKEN_PATH = File.join(Dir.home, '.claude', '.google', 'token.json')
 OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
@@ -46,11 +49,11 @@ def authorize
     }
   end
 
-  # Create token store with contacts scope
+  # Create token store with both calendar and contacts scopes
   token_store = Google::Auth::Stores::FileTokenStore.new(file: TOKEN_PATH)
   authorizer = Google::Auth::UserAuthorizer.new(
     client_id,
-    [CONTACTS_SCOPE],
+    [CALENDAR_SCOPE, CONTACTS_SCOPE],
     token_store
   )
 
@@ -107,19 +110,79 @@ def init_service
   service
 end
 
-# Search contacts by name
+# Normalize phone number to digits only for comparison
+# Also removes leading '1' (US country code) for better matching
+def normalize_phone(phone)
+  return '' if phone.nil?
+  # Remove all non-digit characters
+  digits = phone.gsub(/\D/, '')
+  # Remove leading '1' if present (US country code)
+  # This allows matching "+1 (619) 846-1019" with "619-846-1019"
+  digits = digits.sub(/^1/, '') if digits.length == 11 && digits.start_with?('1')
+  digits
+end
+
+# Normalize text by removing diacritics/accents for accent-insensitive matching
+# This allows "Zoe" to match "Zoë", "Jose" to match "José", etc.
+def normalize_diacritics(text)
+  return '' if text.nil?
+  # Use Unicode normalization (NFD) to decompose characters, then remove combining marks
+  text.unicode_normalize(:nfd).gsub(/\p{Mn}/, '')
+end
+
+# Search contacts by name, email, or phone (client-side filtering)
 def search_contacts(service, query)
   begin
-    response = service.search_contacts(
-      query: query,
-      read_mask: 'names,emailAddresses,phoneNumbers,organizations,birthdays,addresses,biographies,urls'
+    # List all contacts and filter client-side
+    response = service.list_person_connections(
+      'people/me',
+      person_fields: 'names,emailAddresses,phoneNumbers,organizations,birthdays,addresses,biographies,urls',
+      page_size: 1000  # Get up to 1000 contacts for search
     )
 
     contacts = []
-    if response.results
-      response.results.each do |result|
-        person = result.person
-        contacts << format_contact(person)
+    query_lower = query.downcase
+    # Normalize query for phone number search (remove all non-digits)
+    query_normalized = normalize_phone(query)
+    # Normalize query for accent-insensitive name matching
+    query_normalized_accents = normalize_diacritics(query_lower)
+
+    if response.connections
+      response.connections.each do |person|
+        # Search in display name, given name, family name, email, and phone
+        match = false
+
+        # Search in names (with accent-insensitive matching)
+        if person.names && !person.names.empty?
+          name = person.names.first
+          # Check both exact match and accent-normalized match
+          match = true if name.display_name&.downcase&.include?(query_lower)
+          match = true if name.given_name&.downcase&.include?(query_lower)
+          match = true if name.family_name&.downcase&.include?(query_lower)
+          # Also check accent-normalized versions
+          match = true if normalize_diacritics(name.display_name&.downcase || '').include?(query_normalized_accents)
+          match = true if normalize_diacritics(name.given_name&.downcase || '').include?(query_normalized_accents)
+          match = true if normalize_diacritics(name.family_name&.downcase || '').include?(query_normalized_accents)
+        end
+
+        # Search in email addresses
+        if !match && person.email_addresses && !person.email_addresses.empty?
+          person.email_addresses.each do |email|
+            match = true if email.value&.downcase&.include?(query_lower)
+          end
+        end
+
+        # Search in phone numbers (normalize both query and stored numbers)
+        if !match && person.phone_numbers && !person.phone_numbers.empty? && !query_normalized.empty?
+          person.phone_numbers.each do |phone|
+            normalized_phone = normalize_phone(phone.value)
+            # Match if the normalized query is contained in the normalized phone number
+            # This handles cases like searching "6198461019" or "+16198461019" or "(619) 846-1019"
+            match = true if normalized_phone.include?(query_normalized)
+          end
+        end
+
+        contacts << format_contact(person) if match
       end
     end
 

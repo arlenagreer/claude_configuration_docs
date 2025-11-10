@@ -167,6 +167,12 @@ scripts/calendar_manager.rb --operation find_free \
 - `--business-end`: Business day end hour (default: 17)
 - `--interval`: Check interval in seconds (default: 1800 = 30 min)
 
+**IMPORTANT - Lunchtime Policy**:
+- **AVOID scheduling meetings during lunch hours (12:00 PM - 1:00 PM) on weekdays**
+- When finding free time, filter out any slots that overlap with noon-1pm
+- Only suggest lunchtime slots if user explicitly requests them or no other times available
+- This applies to all availability checks and meeting scheduling requests
+
 ## Natural Language Examples
 
 ### User Says: "What's on my calendar today?"
@@ -189,6 +195,7 @@ scripts/calendar_manager.rb --operation create \
 ### User Says: "Find a time when I am free next week during business hours"
 ```bash
 # Calculate next week dates
+# NOTE: Filter out lunchtime slots (12:00 PM - 1:00 PM) from results unless user explicitly requests lunch hours
 scripts/calendar_manager.rb --operation find_free \
   --time-min "[NEXT_WEEK_START]T00:00:00" \
   --time-max "[NEXT_WEEK_END]T23:59:59" \
@@ -356,9 +363,10 @@ scripts/calendar_manager.rb --operation create \
 
 ### Free Time Finding
 1. Default to business hours (9am-5pm)
-2. Use 30-minute intervals for checking
-3. Return top 5 slots by default
-4. Consider timezone when suggesting times
+2. **AVOID LUNCHTIME**: Do not suggest times between 12:00 PM - 1:00 PM on weekdays unless user explicitly requests it
+3. Use 30-minute intervals for checking
+4. Return top 5 slots by default
+5. Consider timezone when suggesting times
 
 ### Event Updates
 1. Always list events first to get event ID
