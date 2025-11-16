@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  chrome:
+    image: browserless/chrome:latest
+    container_name: chrome-devtools-browser
+    hostname: chrome-devtools
+
+    ports:
+      - "9223:3000"
+      - "${VNC_PORT:-5900}:5900"
+
+    environment:
+      - CONNECTION_TIMEOUT=600000
+      - MAX_CONCURRENT_SESSIONS=5
+      - PREBOOT_CHROME=true
+      - DEMO_MODE=false
+      - ENABLE_DEBUGGER=true
+      - CHROME_REFRESH_TIME=0
+      - DEFAULT_HEADLESS=true
+      - DEFAULT_LAUNCH_ARGS=["--no-sandbox","--disable-dev-shm-usage"]
+
+    volumes:
+      - chrome-data:/data
+      - chrome-downloads:/downloads
+
+    networks:
+      - agent-network
+
+    restart: unless-stopped
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    cap_add:
+      - SYS_ADMIN
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/json/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Shared memory for Chrome
+    shm_size: 2gb
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  cdp-api:
+    image: node:18-alpine
+    container_name: chrome-devtools-api
+    hostname: cdp-api
+
+    ports:
+      - "${CDP_PORT:-9222}:3000"
+
+    command: sh -c "npm install && node /app/cdp-api-server.js"
+
+    working_dir: /app
+
+    volumes:
+      - ./cdp-api-server.js:/app/cdp-api-server.js:ro
+      - ./package.json:/app/package.json:ro
+      - cdp-api-cache:/app/node_modules
+
+    networks:
+      - agent-network
+
+    restart: unless-stopped
+
+    depends_on:
+      - chrome
+
+    environment:
+      - NODE_ENV=production
+
+    # Health check
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  cdp-api-cache:
+    driver: local
+  chrome-data:
+    driver: local
+  chrome-downloads:
+    driver: local
+
+networks:
+  agent-network:
+    external: true

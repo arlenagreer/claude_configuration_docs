@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.40.0-jammy
+    container_name: playwright-server
+    hostname: playwright
+
+    ports:
+      - "${PLAYWRIGHT_PORT:-3000}:3000"
+
+    environment:
+      - PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+      - NODE_ENV=production
+
+    command: sh -c "npm install && node /app/playwright-api-server.js"
+
+    working_dir: /app
+
+    volumes:
+      - playwright-cache:/ms-playwright
+      - playwright-downloads:/downloads
+      - ./playwright-api-server.js:/app/playwright-api-server.js:ro
+      - ./package.json:/app/package.json:ro
+
+    networks:
+      - agent-network
+
+    restart: unless-stopped
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # IPC mode for better browser performance
+    ipc: host
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  playwright-cache:
+    driver: local
+  playwright-downloads:
+    driver: local
+
+networks:
+  agent-network:
+    external: true

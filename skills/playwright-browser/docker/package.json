@@ -1,0 +1,13 @@
+{
+  "name": "playwright-api-server",
+  "version": "1.0.0",
+  "description": "REST API server for Playwright browser automation",
+  "main": "playwright-api-server.js",
+  "scripts": {
+    "start": "node playwright-api-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "playwright": "1.40.0"
+  }
+}
