@@ -1,0 +1,104 @@
+name: Security Audit
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  schedule:
+    # Run weekly security audits every Monday at 9 AM PST
+    - cron: '0 16 * * 1'  # 16:00 UTC = 9:00 AM PST
+  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  npm-audit:
+    name: NPM Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit (informational)
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+        id: audit-info
+
+      - name: Run npm audit (fail on high/critical)
+        run: npm audit --audit-level=high
+        id: audit-strict
+
+      - name: Generate audit report
+        if: always()
+        run: |
+          echo "## NPM Security Audit Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          npm audit --json > audit-report.json
+
+          # Parse and display summary
+          VULNERABILITIES=$(cat audit-report.json | jq -r '.metadata.vulnerabilities | to_entries | map("\(.key): \(.value)") | join(", ")')
+          echo "**Vulnerabilities found:** $VULNERABILITIES" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-report
+          path: audit-report.json
+          retention-days: 30
+
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const audit = JSON.parse(fs.readFileSync('audit-report.json', 'utf8'));
+            const vulns = audit.metadata.vulnerabilities;
+
+            const comment = `## ⚠️ Security Audit Failed
+
+            **Vulnerabilities detected:**
+            - Critical: ${vulns.critical || 0}
+            - High: ${vulns.high || 0}
+            - Moderate: ${vulns.moderate || 0}
+            - Low: ${vulns.low || 0}
+
+            Please review and address high/critical vulnerabilities before merging.
+
+            Run \`npm audit\` locally for details.`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: true
