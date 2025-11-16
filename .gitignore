@@ -45,3 +45,6 @@ backups/
 *.backup.*
 *~
 \#*\#
+
+# Slack workspace OAuth tokens (NEVER commit these)
+.slack/workspaces/*.json

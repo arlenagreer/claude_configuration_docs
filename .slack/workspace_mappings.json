@@ -1,0 +1,25 @@
+{
+  "project_mappings": [
+    {
+      "project_paths": [
+        "/Users/arlenagreer/Desktop/GitHub Projects/dreamanager",
+        "/Users/arlenagreer/Github_Projects/dreamanager"
+      ],
+      "workspace_id": "dreamanager"
+    },
+    {
+      "project_paths": [
+        "/Users/arlenagreer/Desktop/GitHub Projects/american_laboratory_trading",
+        "/Users/arlenagreer/Github_Projects/american_laboratory_trading"
+      ],
+      "workspace_id": "american_laboratory_trading"
+    },
+    {
+      "project_paths": [
+        "/Users/arlenagreer/Desktop/GitHub Projects/SoftTrak",
+        "/Users/arlenagreer/Github_Projects/SoftTrak"
+      ],
+      "workspace_id": "softtrak"
+    }
+  ]
+}
