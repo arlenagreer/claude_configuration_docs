@@ -1,0 +1,12 @@
+{
+  "properties": {
+    "title": "sheet-skill-test"
+  },
+  "sheets": [
+    {
+      "properties": {
+        "title": "Sheet1"
+      }
+    }
+  ]
+}

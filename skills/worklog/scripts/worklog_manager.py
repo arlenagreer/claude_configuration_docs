@@ -13,6 +13,12 @@ from typing import Optional, List, Dict
 WORKLOG_FILE = Path(__file__).parent.parent / "worklog.json"
 INVOICE_CLIENTS_FILE = Path.home() / ".claude/skills/invoice/clients.json"
 
+# Client name aliases/synonyms
+CLIENT_ALIASES = {
+    "ALT": "American Laboratory Trading",
+    "alt": "American Laboratory Trading",
+}
+
 
 def load_worklog() -> Dict:
     """Load worklog data from JSON file"""
@@ -45,17 +51,40 @@ def get_client_names() -> List[str]:
     return [client["name"] for client in clients]
 
 
+def resolve_client_alias(client_name: str) -> str:
+    """
+    Resolve a client alias to the actual client name
+
+    Args:
+        client_name: Client name or alias
+
+    Returns:
+        The actual client name (or the input if no alias match)
+    """
+    return CLIENT_ALIASES.get(client_name, client_name)
+
+
 def validate_client(client_name: str) -> bool:
-    """Check if client name exists in invoice skill"""
+    """
+    Check if client name exists in invoice skill
+    Supports both actual names and aliases
+    """
+    # Resolve alias first
+    resolved_name = resolve_client_alias(client_name)
     valid_clients = get_client_names()
-    return client_name in valid_clients
+    return resolved_name in valid_clients
 
 
 def get_client_rate(client_name: str) -> Optional[float]:
-    """Get hourly rate for a client (if hourly billing)"""
+    """
+    Get hourly rate for a client (if hourly billing)
+    Supports both actual names and aliases
+    """
+    # Resolve alias first
+    resolved_name = resolve_client_alias(client_name)
     clients = load_invoice_clients()
     for client in clients:
-        if client["name"] == client_name:
+        if client["name"] == resolved_name:
             if client.get("invoice_type") == "hourly":
                 return client.get("hourly_rate")
     return None
@@ -71,7 +100,7 @@ def add_entry(
     Add a new worklog entry
 
     Args:
-        client_name: Name of the client (must match invoice skill)
+        client_name: Name of the client (must match invoice skill) or alias
         hours: Number of hours worked
         description: Description of work performed
         date: Date of work (YYYY-MM-DD format), defaults to today
@@ -79,6 +108,9 @@ def add_entry(
     Returns:
         The created entry dictionary
     """
+    # Resolve alias to actual client name
+    resolved_client_name = resolve_client_alias(client_name)
+
     # Validate client exists
     if not validate_client(client_name):
         valid_clients = get_client_names()
@@ -101,13 +133,13 @@ def add_entry(
     except ValueError:
         raise ValueError("Date must be in YYYY-MM-DD format")
 
-    # Create entry
+    # Create entry (using resolved/canonical client name)
     entry = {
-        "client": client_name,
+        "client": resolved_client_name,
         "date": date,
         "hours": hours,
         "description": description,
-        "hourly_rate": get_client_rate(client_name),
+        "hourly_rate": get_client_rate(resolved_client_name),
         "created_at": datetime.now().isoformat()
     }
 
@@ -128,7 +160,7 @@ def list_entries(
     List worklog entries with optional filters
 
     Args:
-        client_name: Filter by client name
+        client_name: Filter by client name or alias
         start_date: Filter entries on or after this date (YYYY-MM-DD)
         end_date: Filter entries on or before this date (YYYY-MM-DD)
 
@@ -140,7 +172,9 @@ def list_entries(
 
     # Apply filters
     if client_name:
-        entries = [e for e in entries if e["client"] == client_name]
+        # Resolve alias before filtering
+        resolved_name = resolve_client_alias(client_name)
+        entries = [e for e in entries if e["client"] == resolved_name]
 
     if start_date:
         entries = [e for e in entries if e["date"] >= start_date]

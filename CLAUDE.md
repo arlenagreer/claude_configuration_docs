@@ -22,7 +22,6 @@
 
 **Command**: `@~/.claude/skills/email/SKILL.md [request]`
 
-**NEVER use direct Gmail MCP calls** (`mcp__gmail__send_email`, `mcp__gmail__draft_email`)
 **NO exceptions for "simple" emails** - ALL emails require the skill
 
 ### Why This Matters
@@ -33,12 +32,12 @@ The email skill provides essential features that direct MCP calls bypass:
 - ✅ **Automatic contact lookup** - Google Contacts integration by name
 - ✅ **Mobile-responsive templates** - Proper formatting on all devices
 - ✅ **Date-aware theming** - Spring, summer, fall, winter, holiday styles
-- ✅ **Himalaya CLI fallback** - Works even when Gmail MCP unavailable
+- ✅ **Himalaya CLI fallback** - Works as alternative when Gmail API unavailable
 
 ### Technical Stack
 
-**Primary Method**: Gmail MCP integration (through skill)
-**Fallback Method**: Himalaya CLI (when MCP unavailable)
+**Primary Method**: Gmail API direct integration via Ruby scripts
+**Fallback Method**: Himalaya CLI (when API unavailable)
 **Contact Resolution**: `~/.claude/skills/email/lookup_contact_email.rb --name "First Last"`
 
 ### Usage Examples
@@ -56,7 +55,7 @@ The email skill provides essential features that direct MCP calls bypass:
 
 ### Enforcement
 
-This rule is enforced in RULES.md as 🔴 CRITICAL priority. Any direct Gmail MCP usage is a behavioral violation.
+This rule is enforced in RULES.md as 🔴 CRITICAL priority.
 
 ## Text Message Communication - AGENT SKILL
 
@@ -137,4 +136,4 @@ Direct script usage:
 @BUSINESS_SYMBOLS.md
 @RESEARCH_CONFIG.md
 
-- Remember to offer to use the Himalaya CLI to send emails in the event that the Gmail MCP is not available
+- Remember to offer to use the Himalaya CLI to send emails in the event that the Gmail API is not available

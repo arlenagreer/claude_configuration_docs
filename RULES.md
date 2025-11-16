@@ -210,17 +210,14 @@ Actionable rules for enhanced Claude Code framework operation.
   1. STOP immediately - do NOT proceed with email
   2. Report exact error to user
   3. Ask user how to resolve
-  4. NEVER improvise with alternative tools (email search, direct MCP)
-- **Never Direct MCP**: Never use `mcp__gmail__send_email` or `mcp__gmail__draft_email` directly without skill context
+  4. NEVER improvise with alternative tools (email search, manual Gmail API calls)
 - **No Exceptions**: Even simple emails must use the skill (formatting, style, seasonal themes)
 - **Features Required**: Seasonal theming, authentic writing style, HTML formatting, contact lookup
-- **Fallback Chain**: Email skill → Himalaya CLI (if MCP unavailable) → Never direct MCP calls
+- **Fallback Chain**: Email skill → Himalaya CLI (if Gmail API unavailable)
 
 ✅ **Right**: Invoke skill → Verify loaded → Proceed with email workflow
 ❌ **Wrong**: Skill fails to load → Proceed anyway with email search
-❌ **Wrong**: Direct `mcp__gmail__send_email` call without skill context
-❌ **Wrong**: Manual contact lookup + direct Gmail MCP
-**Detection**: `grep -r "mcp__gmail__send\|mcp__gmail__draft"`
+❌ **Wrong**: Manual contact lookup + direct Gmail API calls without skill context
 
 ## Skill Invocation
 **Priority**: 🔴 **Triggers**: User explicitly requests a skill by name (e.g., "Use the frontend-debug skill")

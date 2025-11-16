@@ -21,7 +21,7 @@ version: 3.0.0
 - Report to user: "❌ Email skill did not load correctly"
 - Show the error you encountered
 - Ask user for guidance on how to proceed
-- NEVER use alternative approaches (email search, direct Gmail MCP)
+- NEVER use alternative approaches (email search, manual Gmail API calls)
 
 ## Purpose
 
@@ -30,7 +30,7 @@ Send and draft professional emails on behalf of Arlen Greer with:
 - Seasonal HTML formatting based on current date
 - Authentic professional writing style
 - Security-first approach with credential redaction
-- Gmail MCP primary, Himalaya CLI fallback
+- Gmail API via Ruby script primary, Himalaya CLI fallback
 
 **🔴 CRITICAL NAME RULE**: User's name is **"Arlen Greer"** or **"Arlen A. Greer"**
 - ✅ CORRECT: Arlen, Arlen Greer, Arlen A. Greer
@@ -65,6 +65,24 @@ These contacts have preferred email addresses that ALWAYS take precedence over G
 - **Mark Whitney** → `mark@dreamanager.com`
 - **Julie Whitney** → `julie@dreamanager.com`
 - **Rose Fletcher** → `rose@dreamanager.com`
+- **Jayson Bernstein** → `jayson@alt.bio`
+- **Susan Butch** → `sbutch@alt.bio`
+- **Kevin Blair** → `kblair@alt.bio`
+- **Ryan Walsh** → `rwalsh@alt.bio`
+
+**Team Aliases**:
+
+- **ALT Team** (when in american_laboratory_trading project) → Send to all four:
+  - `jayson@alt.bio`
+  - `sbutch@alt.bio`
+  - `kblair@alt.bio`
+  - `rwalsh@alt.bio`
+
+- **Dreamanager Team** or **Five Star Team** → Send to all four:
+  - `mark@dreamanager.com`
+  - `julie@dreamanager.com`
+  - `rose@dreamanager.com`
+  - `ed@dreamanager.com` (Dreamanager context)
 
 **Context-Sensitive Routing**:
 
@@ -345,7 +363,7 @@ echo '{"query":"is:unread","max_results":10}' | gmail_manager.rb list
 - Verify token: `~/.claude/.google/token.json`
 - Re-authenticate if needed or request manual email
 
-**Gmail MCP Unavailable**:
+**Gmail API Unavailable**:
 - Automatically offer Himalaya CLI fallback
 - Provide clear instructions for CLI method
 - Confirm user wants to proceed
@@ -397,7 +415,8 @@ echo '{"query":"is:unread","max_results":10}' | gmail_manager.rb list
 
 ## Version History
 
-- **3.0.0** (2025-11-09) - Migrated from Gmail MCP server integration to Google CLI pattern using gmail_manager.rb Ruby script. Now uses google-apis-gmail_v1 gem with AUTH_GMAIL_MODIFY scope for direct Gmail API access. Shares OAuth token (~/.claude/.google/token.json) with calendar and contacts skills. Automatic BCC injection handled by script. Removed Himalaya CLI fallback references. Future-ready for email reading capabilities.
+- **3.1.0** (2025-11-12) - Added preferred email addresses for American Laboratory Trading team members (Jayson Bernstein, Susan Butch, Kevin Blair, Ryan Walsh). Added team aliases: "ALT Team" for american_laboratory_trading project (sends to all four ALT members), and "Dreamanager Team"/"Five Star Team" (sends to Mark Whitney, Julie Whitney, Rose Fletcher, Ed Korkuch at their @dreamanager.com addresses).
+- **3.0.0** (2025-11-09) - Migrated to Google CLI pattern using gmail_manager.rb Ruby script. Now uses google-apis-gmail_v1 gem with AUTH_GMAIL_MODIFY scope for direct Gmail API access. Shares OAuth token (~/.claude/.google/token.json) with calendar and contacts skills. Automatic BCC injection handled by script. Himalaya CLI available as fallback. Future-ready for email reading capabilities.
 - **2.5.0** (2025-11-04) - Removed Halloween atmospheric theme as scheduled. Emails now return to standard seasonal themes (Fall theme for current period: September 23 - December 20).
 - **2.4.0** (2025-10-30) - Added special Halloween atmospheric theme for October 30-31, 2025. Sophisticated dark design with moon, stars, clouds, and autumn leaves. Theme automatically applies to all outgoing emails on these dates. Instructions included to remove theme on November 1st, 2025.
 - **2.3.0** (2025-10-30) - Added automatic BCC default behavior: arlenagreer@gmail.com is now automatically included in BCC field when sending to 2+ recipients (no user request needed). Single-recipient emails still require explicit "bcc me" request.

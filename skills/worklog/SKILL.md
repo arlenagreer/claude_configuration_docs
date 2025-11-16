@@ -36,7 +36,7 @@ When the user requests to log work:
    - **Date** - Use current date unless the user specifies a different date for retroactive entry
 
 3. **Validate client name** - The script automatically validates against the invoice skill's client list. Valid client names are:
-   - "American Laboratory Trading"
+   - "American Laboratory Trading" (aliases: "ALT", "alt")
    - "Empirico"
    - "Versa Computing"
 
@@ -70,10 +70,30 @@ python3 scripts/worklog_manager.py add \
 ```
 
 **Important**:
-- Client name must exactly match a name from the invoice skill
+- Client name must exactly match a name from the invoice skill (or use a supported alias)
 - Hours must be a positive number (can include decimals like 2.5)
 - Date format must be YYYY-MM-DD
 - If date is omitted, the current date is used automatically
+
+#### Client Aliases
+
+For convenience, the worklog skill supports client name aliases:
+
+- **"ALT"** or **"alt"** → "American Laboratory Trading"
+
+You can use these aliases in any command that accepts a client name:
+
+```bash
+# These are equivalent:
+python3 scripts/worklog_manager.py add --client "ALT" --hours 2 --description "Work done"
+python3 scripts/worklog_manager.py add --client "American Laboratory Trading" --hours 2 --description "Work done"
+
+# Aliases also work for filtering and totals:
+python3 scripts/worklog_manager.py list --client "ALT"
+python3 scripts/worklog_manager.py total --client "alt"
+```
+
+All entries are stored using the canonical client name ("American Laboratory Trading"), so aliases are purely a convenience for input.
 
 #### List Worklog Entries
 

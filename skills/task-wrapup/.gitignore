@@ -1,0 +1,34 @@
+# Task-Wrapup Skill - Git Ignore
+
+# Documentation update request files (temporary, should be processed by Claude Code)
+.task_wrapup_doc_update_request.md
+
+# Session state files (created by task-start skill, consumed by task-wrapup)
+.task_session_state.json
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store

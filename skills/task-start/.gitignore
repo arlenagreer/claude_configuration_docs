@@ -1,0 +1,31 @@
+# Task-Start Skill - Git Ignore
+
+# Session state files (created by task-start, consumed by task-wrapup)
+.task_session_state.json
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store

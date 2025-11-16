@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "project_name": "Claude",
+  "created_at": "2025-11-14T00:00:00",
+  "last_updated": "2025-11-14T00:00:00",
+  "summary_generation": {
+    "strategy": "hybrid",
+    "sources": {
+      "git_commits": true,
+      "todo_tasks": true,
+      "serena_memory": true,
+      "file_changes": true
+    },
+    "intelligence": {
+      "extract_key_decisions": true,
+      "identify_blockers": true,
+      "highlight_risks": true,
+      "include_metrics": false
+    }
+  },
+  "communication": {
+    "email": {
+      "enabled": true,
+      "recipients": [
+        {
+          "first_name": "Arlen",
+          "last_name": "Greer",
+          "email": "arlenagreer@gmail.com"
+        }
+      ],
+      "cc": [],
+      "template": "professional",
+      "include_attachments": false
+    },
+    "sms": {
+      "enabled": true,
+      "recipients": [
+        {
+          "first_name": "Arlen",
+          "last_name": "Greer",
+          "phone": "+16192953304"
+        }
+      ],
+      "max_length": 320,
+      "critical_only": false
+    },
+    "slack": {
+      "enabled": false,
+      "channel": "",
+      "mention_users": [],
+      "thread_mode": "new_message"
+    }
+  },
+  "worklog": {
+    "enabled": true,
+    "prompt_for_duration": true,
+    "default_duration_minutes": null,
+    "round_to_nearest": 15,
+    "date_handling": {
+      "prompt_for_date": false,
+      "default": "today",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "documentation": {
+    "enabled": true,
+    "auto_update": true,
+    "paths": ["README.md", "CHANGELOG.md"],
+    "strategy": "smart_merge",
+    "commit_changes": false
+  },
+  "optional_actions": {
+    "calendar": {
+      "enabled": false,
+      "prompt_by_default": false
+    },
+    "github": {
+      "enabled": false,
+      "prompt_by_default": false
+    }
+  },
+  "execution": {
+    "preview_before_send": true,
+    "parallel_execution": true,
+    "max_retries": 3,
+    "retry_delay_seconds": 5
+  }
+}
