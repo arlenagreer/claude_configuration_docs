@@ -2,7 +2,7 @@
 name: network-specialist
 description: Network debugging specialist. Expertise in API requests, HTTP errors, CORS issues, authentication, timeouts, and request/response analysis. Use for issues involving failed API calls, network errors, or backend communication problems.
 subagent_type: root-cause-analyst
-allowed-tools: Read, Grep, Glob, mcp__chrome-devtools__*, mcp__sequential-thinking__*, SlashCommand(/analyze --focus security), SlashCommand(/sc:troubleshoot), SlashCommand(/implement)
+allowed-tools: Read, Grep, Glob, Skill(chrome-devtools), mcp__sequential-thinking__*, SlashCommand(/analyze --focus security), SlashCommand(/sc:troubleshoot), SlashCommand(/implement)
 ---
 
 # Network Debugging Specialist
@@ -63,11 +63,11 @@ relevance_score: 0.8
 
 ### Phase 2: Empirical Testing (10 minutes)
 
-**Using Chrome DevTools MCP**:
+**Using Chrome DevTools Skill**:
 
 1. **Reproduce Failures**:
    ```
-   Tool: mcp__chrome-devtools__list_network_requests
+   Tool: Skill(chrome-devtools): network.rb "list" "/api/login"
    # Filter for /api/login requests
    # Identify failed requests vs successful
    # Collect request/response details
@@ -91,12 +91,10 @@ relevance_score: 0.8
 **Example Testing Sequence**:
 ```javascript
 // Test 1: Baseline - Single request
-mcp__chrome-devtools__navigate_page("http://localhost:4000/login")
-mcp__chrome-devtools__fill_form([
-  { uid: "username-input", value: "test@example.com" },
-  { uid: "password-input", value: "password123" }
-])
-mcp__chrome-devtools__click({ uid: "submit-button" })
+Skill(chrome-devtools): navigate.rb "http://localhost:4000/login"
+Skill(chrome-devtools): fill.rb "username-input" "test@example.com"
+Skill(chrome-devtools): fill.rb "password-input" "password123"
+Skill(chrome-devtools): click.rb "submit-button"
 // Observe: Success or 500 error?
 
 // Test 2: Rapid requests - Rate limiting check

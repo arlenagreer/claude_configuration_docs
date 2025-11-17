@@ -1,7 +1,7 @@
 ---
 name: frontend-qc
-description: Performs comprehensive frontend quality assurance reviews using browser automation. Systematically tests UI elements, discovers and reports bugs to GitHub Issues, and provides improvement recommendations. Uses Chrome DevTools MCP for interactive testing. This skill should be used when performing quality assurance reviews of frontend UI components, testing user interfaces for bugs or usability issues, validating frontend implementations before deployment, or conducting systematic UI testing across multiple components.
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write, Task
+description: Performs comprehensive frontend quality assurance reviews using browser automation. Systematically tests UI elements, discovers and reports bugs to GitHub Issues, and provides improvement recommendations. Uses Chrome DevTools Skill for interactive testing. This skill should be used when performing quality assurance reviews of frontend UI components, testing user interfaces for bugs or usability issues, validating frontend implementations before deployment, or conducting systematic UI testing across multiple components.
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write, Task
 ---
 
 # Frontend Quality Assurance
@@ -18,9 +18,9 @@ Execute quality assurance testing through six systematic phases:
 
 **Before starting QA testing, verify all required tools and services:**
 
-1. **Chrome DevTools MCP Connection**
-   - List available pages: `mcp__chrome-devtools__list_pages`
-   - If fails: STOP immediately - user must configure Chrome DevTools MCP server
+1. **Chrome DevTools Skill Connection**
+   - List available pages: `Skill(chrome-devtools): list.rb "pages"`
+   - If fails: STOP immediately - user must start Chrome DevTools Docker containers
    - Load troubleshooting if needed: `Read(@references/troubleshooting.md)`
 
 2. **Application Accessibility**
@@ -109,7 +109,7 @@ next_step: "Proceed with Phase 1 requirements gathering"
 **Log Entry**: `[timestamp] PHASE_2_SETUP: STARTED - URL: [app_url]`
 
 Execute setup sequence:
-1. Launch browser page with Chrome DevTools MCP
+1. Launch browser page with Chrome DevTools Skill
 2. Navigate to application URL
 3. Authenticate with test credentials
 4. Take baseline screenshot for reference
@@ -222,7 +222,7 @@ Documentation and testing checklists that inform the QA process:
 
 - `accessibility-testing.md` - WCAG compliance and accessibility validation checklist
 - `bug-template.md` - Structured template for bug report creation
-- `devtools-commands.md` - Chrome DevTools MCP command reference
+- `devtools-commands.md` - Chrome DevTools Skill script reference
 - `feature-template.md` - Enhancement request template for improvements
 - `form-testing.md` - Comprehensive form element testing checklist
 - `modal-testing.md` - Modal/dialog interaction testing checklist

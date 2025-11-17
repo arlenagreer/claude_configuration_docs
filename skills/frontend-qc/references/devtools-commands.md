@@ -1,65 +1,63 @@
-# Chrome DevTools MCP Commands
+# Chrome DevTools Skill Commands
 
 ## Navigation
 
-```javascript
-mcp__chrome-devtools__navigate_page({ url: "http://localhost:3000" })
-mcp__chrome-devtools__list_pages()  // See all open pages
-mcp__chrome-devtools__select_page({ pageIdx: 0 })  // Switch pages
-mcp__chrome-devtools__navigate_page_history({ navigate: "back" })
+```bash
+Skill(chrome-devtools): navigate.rb "http://localhost:3000"
+Skill(chrome-devtools): list.rb "pages"  # See all open pages
+Skill(chrome-devtools): select.rb "0"  # Switch to page index 0
+Skill(chrome-devtools): navigate.rb "back"  # Navigate back
 ```
 
 ## Screenshots
 
-```javascript
-mcp__chrome-devtools__take_screenshot({ fullPage: true })
-mcp__chrome-devtools__take_screenshot({ uid: "element-id" })  // Element screenshot
-mcp__chrome-devtools__take_screenshot({ format: "png", quality: 90 })
+```bash
+Skill(chrome-devtools): screenshot.rb "--full-page"
+Skill(chrome-devtools): screenshot.rb "--element element-id"
+Skill(chrome-devtools): screenshot.rb "--format png --quality 90"
 ```
 
 ## Page Inspection
 
-```javascript
-mcp__chrome-devtools__take_snapshot()  // Get page structure with UIDs
-mcp__chrome-devtools__list_console_messages()  // Console errors/warnings
-mcp__chrome-devtools__list_network_requests()  // Network activity
+```bash
+Skill(chrome-devtools): snapshot.rb  # Get page structure with UIDs
+Skill(chrome-devtools): console.rb "list"  # Console errors/warnings
+Skill(chrome-devtools): network.rb "list"  # Network activity
 ```
 
 ## Interaction
 
-```javascript
-mcp__chrome-devtools__click({ uid: "button-uid" })
-mcp__chrome-devtools__click({ uid: "element-uid", dblClick: true })
-mcp__chrome-devtools__fill({ uid: "input-uid", value: "test@example.com" })
-mcp__chrome-devtools__hover({ uid: "element-uid" })
-mcp__chrome-devtools__wait_for({ text: "Success message", timeout: 5000 })
+```bash
+Skill(chrome-devtools): click.rb "button-uid"
+Skill(chrome-devtools): click.rb "element-uid" "--double"
+Skill(chrome-devtools): fill.rb "input-uid" "test@example.com"
+Skill(chrome-devtools): hover.rb "element-uid"
+Skill(chrome-devtools): wait.rb "Success message" "5000"  # Wait for text with timeout
 ```
 
 ## Form Testing
 
-```javascript
-mcp__chrome-devtools__fill_form({
-  elements: [
-    { uid: "email-input", value: "test@example.com" },
-    { uid: "password-input", value: "password123" }
-  ]
-})
+```bash
+# Fill multiple form fields sequentially
+Skill(chrome-devtools): fill.rb "email-input" "test@example.com"
+Skill(chrome-devtools): fill.rb "password-input" "password123"
+Skill(chrome-devtools): click.rb "submit-button"
 ```
 
 ## Responsive Testing
 
-```javascript
-mcp__chrome-devtools__resize_page({ width: 375, height: 667 })   // Mobile
-mcp__chrome-devtools__resize_page({ width: 768, height: 1024 })  // Tablet
-mcp__chrome-devtools__resize_page({ width: 1920, height: 1080 }) // Desktop
+```bash
+Skill(chrome-devtools): resize.rb "375" "667"    # Mobile
+Skill(chrome-devtools): resize.rb "768" "1024"   # Tablet
+Skill(chrome-devtools): resize.rb "1920" "1080"  # Desktop
 ```
 
 ## Dialog Handling
 
-```javascript
-mcp__chrome-devtools__handle_dialog({ action: "accept" })
-mcp__chrome-devtools__handle_dialog({ action: "dismiss" })
-mcp__chrome-devtools__handle_dialog({ action: "accept", promptText: "input text" })
+```bash
+Skill(chrome-devtools): dialog.rb "accept"
+Skill(chrome-devtools): dialog.rb "dismiss"
+Skill(chrome-devtools): dialog.rb "accept" "input text"  # With prompt text
 ```
 
 ## Key Workflow Pattern

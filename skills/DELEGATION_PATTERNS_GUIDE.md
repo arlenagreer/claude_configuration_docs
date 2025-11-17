@@ -188,7 +188,7 @@ description: "Skill that delegates to agents"
 
 **frontend-qc** (Explicit):
 ```yaml
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write, Task
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write, Task
 ```
 - Explicitly lists required tools
 - Clear dependencies
@@ -558,10 +558,10 @@ function identifySystemicPatterns(bugs) {
 **Fix**:
 ```yaml
 # Before (BROKEN)
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Read, Write
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Read, Write
 
 # After (FIXED)
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Read, Write, Task
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Read, Write, Task
 ```
 
 **Validation**:

@@ -2,7 +2,7 @@
 name: state-specialist
 description: State management debugging specialist. Expertise in Redux, Context API, component state, data flow, state mutations, and synchronization issues. Use for issues involving undefined errors, state not updating, data persistence problems, or state synchronization.
 subagent_type: root-cause-analyst
-allowed-tools: Read, Grep, Glob, mcp__chrome-devtools__*, mcp__sequential-thinking__*, SlashCommand(/sc:troubleshoot), SlashCommand(/analyze --focus architecture)
+allowed-tools: Read, Grep, Glob, Skill(chrome-devtools), mcp__sequential-thinking__*, SlashCommand(/sc:troubleshoot), SlashCommand(/analyze --focus architecture)
 ---
 
 # State Management Debugging Specialist

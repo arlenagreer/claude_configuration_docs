@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# Branch creation script for task-start skill
-# Creates properly named feature branches
+# Branch creation script for task-startup skill
+# Creates properly named feature branches from task names
 #
 
 set -e
@@ -45,16 +45,10 @@ sanitize_name() {
 
 # Function to create branch name
 create_branch_name() {
-    local issue_number="$1"
-    local description="$2"
+    local task_name="$1"
 
-    local sanitized_desc=$(sanitize_name "$description")
-
-    if [ -n "$issue_number" ]; then
-        echo "${BRANCH_PREFIX}/${issue_number}-${sanitized_desc}"
-    else
-        echo "${BRANCH_PREFIX}/${sanitized_desc}"
-    fi
+    local sanitized_name=$(sanitize_name "$task_name")
+    echo "${BRANCH_PREFIX}/${sanitized_name}"
 }
 
 # Function to switch to base branch
@@ -85,7 +79,7 @@ create_and_checkout() {
 create_session_state() {
     local feature_branch="$1"
     local parent_branch="$2"
-    local issue_number="$3"
+    local task_name="$3"
     local project_root=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
     local state_file="${project_root}/.task_session_state.json"
 
@@ -94,30 +88,16 @@ create_session_state() {
     # Generate ISO 8601 UTC timestamp
     local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-    # Build JSON (handle optional issue_number)
-    if [ -n "$issue_number" ]; then
-        cat > "$state_file" <<EOF
+    # Build JSON
+    cat > "$state_file" <<EOF
 {
   "schema_version": "1.0",
   "created_at": "$timestamp",
   "feature_branch": "$feature_branch",
   "parent_branch": "$parent_branch",
-  "issue_number": $issue_number,
-  "github_issue": null
+  "task_name": "$task_name"
 }
 EOF
-    else
-        cat > "$state_file" <<EOF
-{
-  "schema_version": "1.0",
-  "created_at": "$timestamp",
-  "feature_branch": "$feature_branch",
-  "parent_branch": "$parent_branch",
-  "issue_number": null,
-  "github_issue": null
-}
-EOF
-    fi
 
     if [ -f "$state_file" ]; then
         echo -e "${GREEN}✅ Session state created: $state_file${NC}"
@@ -128,23 +108,22 @@ EOF
 
 # Main script
 if [ $# -lt 1 ]; then
-    echo "Usage: $0 <description> [issue-number]"
+    echo "Usage: $0 <task-name>"
     echo
     echo "Examples:"
-    echo "  $0 'user authentication'"
-    echo "  $0 'user authentication' 123"
+    echo "  $0 'user-auth'"
+    echo "  $0 'payment-api'"
+    echo "  $0 'fix-login'"
     exit 1
 fi
 
-DESCRIPTION="$1"
-ISSUE_NUMBER="${2:-}"
+TASK_NAME="$1"
 
 # Generate branch name
-BRANCH_NAME=$(create_branch_name "$ISSUE_NUMBER" "$DESCRIPTION")
+BRANCH_NAME=$(create_branch_name "$TASK_NAME")
 
 echo "📋 Branch Configuration:"
-echo "   Description: $DESCRIPTION"
-echo "   Issue Number: ${ISSUE_NUMBER:-None}"
+echo "   Task Name: $TASK_NAME"
 echo "   Branch Name: $BRANCH_NAME"
 echo
 
@@ -158,4 +137,4 @@ switch_to_base
 create_and_checkout "$BRANCH_NAME"
 
 # Create session state file for PR automation
-create_session_state "$BRANCH_NAME" "$PARENT_BRANCH" "$ISSUE_NUMBER"
+create_session_state "$BRANCH_NAME" "$PARENT_BRANCH" "$TASK_NAME"

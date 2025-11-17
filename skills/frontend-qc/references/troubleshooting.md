@@ -1,21 +1,21 @@
 # Frontend QA Troubleshooting Guide
 
-## Common Chrome DevTools MCP Issues
+## Common Chrome DevTools Skill Issues
 
 ### Connection Issues
 
 **Symptom**: `Error: Unable to connect to Chrome DevTools`
 
 **Causes**:
-- Browser not running
-- MCP server not configured
+- Docker containers not running
 - Port conflicts
+- Network issues
 
 **Solutions**:
-1. Verify browser is running: `mcp__chrome-devtools__list_pages`
-2. Check MCP configuration in `.mcp.json`
-3. Restart browser and MCP server
-4. Check for port conflicts (default: 9222)
+1. Verify containers are running: `docker ps --filter "name=chrome-devtools"`
+2. Check browser pages: `Skill(chrome-devtools): list.rb "pages"`
+3. Restart Docker containers: `docker restart chrome-devtools-api chrome-devtools-browser`
+4. Check for port conflicts (API: 9222, Browser: 9223)
 
 ---
 
@@ -27,9 +27,9 @@
 - Page crashed
 
 **Solutions**:
-1. List current pages: `mcp__chrome-devtools__list_pages`
-2. Select correct page: `mcp__chrome-devtools__select_page` with valid index
-3. Navigate to target URL: `mcp__chrome-devtools__navigate_page`
+1. List current pages: `Skill(chrome-devtools): list.rb "pages"`
+2. Select correct page: `Skill(chrome-devtools): select.rb "<index>"`
+3. Navigate to target URL: `Skill(chrome-devtools): navigate.rb "<url>"`
 4. Check browser console for JavaScript errors
 
 ---
@@ -45,9 +45,9 @@
 - Element loaded after snapshot taken
 
 **Solutions**:
-1. Take fresh snapshot: `mcp__chrome-devtools__take_snapshot`
+1. Take fresh snapshot: `Skill(chrome-devtools): snapshot.rb`
 2. Verify element UID from new snapshot
-3. Wait for element to load: `mcp__chrome-devtools__wait_for` with text
+3. Wait for element to load: `Skill(chrome-devtools): wait.rb "<text>" "5000"`
 4. Check if element is in a modal or hidden section
 5. Scroll element into view first if needed
 
@@ -81,10 +81,10 @@
 - JavaScript rendering issue
 
 **Solutions**:
-1. Wait for page load: `mcp__chrome-devtools__wait_for` with key text
-2. Verify correct page selected: `mcp__chrome-devtools__list_pages`
+1. Wait for page load: `Skill(chrome-devtools): wait.rb "<text>" "5000"`
+2. Verify correct page selected: `Skill(chrome-devtools): list.rb "pages"`
 3. Scroll to element before screenshot
-4. Take full page screenshot instead: `fullPage: true`
+4. Take full page screenshot instead: `Skill(chrome-devtools): screenshot.rb "--full-page"`
 5. Check if page requires authentication/navigation
 
 ---
@@ -123,7 +123,7 @@
 **Solutions**:
 1. Verify credentials from test-credentials.md
 2. Clear browser cookies/storage
-3. Navigate to login page fresh: `mcp__chrome-devtools__navigate_page`
+3. Navigate to login page fresh: `Skill(chrome-devtools): navigate.rb "<url>"`
 4. Check if MFA is enabled (requires manual code entry)
 5. Look for CSRF errors in browser console
 
@@ -192,7 +192,7 @@
 - Z-index stacking issues
 
 **Solutions**:
-1. Wait for modal appearance: `mcp__chrome-devtools__wait_for` with modal text
+1. Wait for modal appearance: `Skill(chrome-devtools): wait.rb "<modal-text>" "5000"`
 2. Take snapshot after modal opens
 3. Verify modal elements in snapshot
 4. Check if modal uses iframe (may need separate handling)
@@ -228,7 +228,7 @@
 - Search active
 
 **Solutions**:
-1. Wait for table to load: `mcp__chrome-devtools__wait_for` with expected text
+1. Wait for table to load: `Skill(chrome-devtools): wait.rb "<expected-text>" "5000"`
 2. Clear any active filters/search
 3. Navigate through pages to find data
 4. Take snapshot to verify table content
@@ -264,8 +264,8 @@
 - Many concurrent operations
 
 **Solutions**:
-1. Disable CPU throttling: `mcp__chrome-devtools__emulate_cpu` with rate 1
-2. Disable network throttling: `mcp__chrome-devtools__emulate_network` with "No emulation"
+1. Disable CPU throttling: `Skill(chrome-devtools): emulate.rb "cpu" "1"`
+2. Disable network throttling: `Skill(chrome-devtools): emulate.rb "network" "none"`
 3. Close unused browser tabs
 4. Run tests on smaller pages first
 5. Reduce snapshot frequency
@@ -282,7 +282,7 @@
 
 **Solutions**:
 1. Check browser console for memory warnings
-2. Reload page: `mcp__chrome-devtools__navigate_page`
+2. Reload page: `Skill(chrome-devtools): navigate.rb "reload"`
 3. Test on fresh browser instance
 4. Report issue to development team
 5. Use smaller test data sets

@@ -2,7 +2,7 @@
 name: frontend-qc-agent
 description: Parallel frontend quality assurance orchestrator. Use for multi-component QA campaigns requiring simultaneous testing across 3+ UI elements or when user explicitly requests parallel testing. Spawns specialized QA sub-agents for parallel browser sessions and aggregates results.
 subagent_type: general-purpose
-allowed-tools: Task, Read, Write, TodoWrite, mcp__chrome-devtools__*, Skill(report-bug), Skill(email)
+allowed-tools: Task, Read, Write, TodoWrite, Skill(chrome-devtools), Skill(report-bug), Skill(email)
 ---
 
 # Frontend QA Agent - Parallel Testing Orchestrator
@@ -101,7 +101,7 @@ sub_agent_spawn:
     application_url: "[url]"
   }
   tools: [
-    "mcp__chrome-devtools__*",
+    "Skill(chrome-devtools)",
     "Skill(report-bug)",
     "Read",
     "Write"

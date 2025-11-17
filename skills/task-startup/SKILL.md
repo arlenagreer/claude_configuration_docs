@@ -1,11 +1,11 @@
 ---
-name: task-start
-description: Comprehensive work session initialization orchestrator that validates environment, creates properly named branches, loads GitHub Issues, and prepares development environment for new tasks
+name: task-startup
+description: Comprehensive work session initialization orchestrator that validates environment, creates properly named branches, and prepares development environment for new tasks
 category: productivity
-version: 1.0.0
+version: 2.0.0
 ---
 
-# Task-Start Skill
+# Task-Startup Skill
 
 **Comprehensive work session initialization orchestrator** for consistent and reliable task startup.
 
@@ -14,19 +14,17 @@ version: 1.0.0
 Automate session-start workflows by:
 - Validating git status and working directory cleanliness
 - Checking and auto-fixing development environment (Docker, database, dependencies)
-- Loading task information from GitHub Issues (highest priority or user-specified)
 - Creating properly named feature branches from develop
 - Logging session start timestamps
-- Optionally invoking frontend-debug skill for GitHub Issue-based tasks
 
 ## When to Use
 
 Trigger this skill when:
 - Starting a new development task or feature
-- Beginning work on a GitHub Issue
+- Beginning work on a new task
 - Setting up environment for development session
 - Need to ensure clean git state before starting work
-- Keywords: "start task", "begin work", "new task", "start issue"
+- Keywords: "start task", "begin work", "new task", "startup task"
 
 ## Core Workflow
 
@@ -39,7 +37,6 @@ Trigger this skill when:
    - Project name
    - Default base branch (typically "development")
    - Docker configuration (enabled, services, health check URL)
-   - GitHub integration settings
    - Environment validation preferences
 
 **Configuration location**: `.task_wrapup_skill_data.json` in project root
@@ -138,96 +135,47 @@ scripts/config_manager.py path
 - `AUTO_MIGRATE`: Auto-run migrations (default: "true")
 - `CHECK_DEPS`: Enable dependency checks (default: "true")
 
-### Phase 4: Task Resolution & GitHub Integration
+### Phase 4: Task Name Resolution
 
-**Determine task to work on**:
+**Determine task name to work on**:
 
-**If user provides task in initial prompt**:
-- Use the user-provided task description or issue number directly
+**If user provides task name in initial prompt**:
+- Use the user-provided task name directly
 - Skip to Phase 5: Branch Creation
 
-**If user does NOT provide task in initial prompt**:
+**If user does NOT provide task name in initial prompt**:
 - Present menu of options:
-  - **a) Specify task description**: User provides custom task description
-  - **b) Specify GitHub Issue Number**: User enters specific issue number to work on
-  - **c) Proceed with next most-critical outstanding GitHub Issue**: Auto-fetch highest priority open issue
+  - **a) Specify task name**: User provides task name for branch creation
+  - **b) Use default task name**: Use a generic timestamp-based name
+  - **c) Skip task name**: Create branch without specific task name (uses "new-task")
 - Wait for user selection before proceeding
 
-**GitHub Issue fetching** using `scripts/github-issue-fetch.py`:
-
-**Fetch specific issue**:
-```bash
-# By issue number
-scripts/github-issue-fetch.py --issue 123
-
-# With custom priority labels
-scripts/github-issue-fetch.py --issue 123 --priority-labels critical high medium low
-
-# JSON output
-scripts/github-issue-fetch.py --issue 123 --format json
-```
-
-**Fetch highest priority issue**:
-```bash
-# Default priority order: urgent, high, medium, low
-scripts/github-issue-fetch.py
-
-# Custom priority order
-scripts/github-issue-fetch.py --priority-labels critical blocker high
-
-# JSON output for programmatic use
-scripts/github-issue-fetch.py --format json
-```
-
-**Requirements**:
-- GitHub CLI (`gh`) must be installed: `brew install gh`
-- Must be authenticated: `gh auth login`
-- Must be in a git repository with GitHub remote
-
-**Issue data returned**:
-```json
-{
-  "number": 123,
-  "title": "Fix login button not responding",
-  "body": "Description of the issue...",
-  "labels": ["bug", "high", "frontend"],
-  "state": "OPEN",
-  "priority": "high"
-}
-```
-
-**Display to user**:
-- Show issue number and title
-- Display priority level
-- Show labels
-- Display description (truncated if very long)
-- Allow user to confirm or specify different task
+**Task name formatting**:
+- Should be concise and descriptive (e.g., "user-auth", "payment-api", "fix-login")
+- Will be automatically sanitized (lowercase, hyphens for spaces)
+- Max length: 30 characters (to keep branch names reasonable)
 
 ### Phase 5: Branch Creation
 
 **Create feature branch** using `scripts/branch-create.sh`:
 
 **Branch naming convention**:
-- Pattern: `feature/{issue-number}-{sanitized-description}`
-- If no issue: `feature/{sanitized-description}`
+- Pattern: `feature/{sanitized-task-name}`
 - Max length: 50 characters
 - Sanitization: lowercase, hyphens for spaces/special chars
 
 **Examples**:
-- With issue #123 "User Authentication": `feature/123-user-authentication`
-- No issue "Password Reset": `feature/password-reset`
-- Issue #456 "Fix Dashboard Loading Speed": `feature/456-fix-dashboard-loading-speed`
+- Task name "user-auth": `feature/user-auth`
+- Task name "Payment API": `feature/payment-api`
+- Task name "Fix Dashboard Loading": `feature/fix-dashboard-loading`
 
 **Execution**:
 ```bash
-# With task description only
-scripts/branch-create.sh "user authentication"
+# With task name
+scripts/branch-create.sh "user-auth"
 
-# With GitHub issue number
-scripts/branch-create.sh "user authentication" 123
-
-# From GitHub issue object (automated)
-scripts/branch-create.sh "$(echo $ISSUE_TITLE | head -c 30)" $ISSUE_NUMBER
+# Without task name (uses default)
+scripts/branch-create.sh
 ```
 
 **Behavior**:
@@ -242,7 +190,7 @@ scripts/branch-create.sh "$(echo $ISSUE_TITLE | head -c 30)" $ISSUE_NUMBER
 The branch creation process automatically creates `.task_session_state.json` in the project root to enable automated pull request creation via the task-wrapup skill. This file tracks:
 - Parent branch (for PR targeting)
 - Feature branch name
-- GitHub issue number and metadata (if available)
+- Task name
 - Session creation timestamp
 
 **Important**: `.task_session_state.json` should be added to `.gitignore` as it contains local session state.
@@ -257,7 +205,7 @@ The branch creation process automatically creates `.task_session_state.json` in 
 **Log session start**:
 1. Record timestamp of session start
 2. Record branch name created
-3. Record task/issue reference
+3. Record task name
 4. Store in session log (if configured)
 
 **Session log structure** (if enabled):
@@ -266,49 +214,25 @@ The branch creation process automatically creates `.task_session_state.json` in 
 
 # Session Start: 2025-01-15 14:30:22
 
-**Branch**: feature/123-user-authentication
-**Issue**: #123 - Fix login button not responding
-**Priority**: high
+**Branch**: feature/user-auth
+**Task**: user-auth
 **Started**: 2025-01-15 14:30:22
 ```
 
 **Purpose**: Future time tracking, session analytics, work pattern analysis
 
-### Phase 7: Frontend-Debug Skill Integration
-
-**Invoke frontend-debug skill** (if applicable):
-
-**Triggers**:
-- Task is based on a GitHub Issue
-- Issue has labels suggesting frontend work (bug, frontend, UI, etc.)
-- Configuration enables auto-invoke (`integrations.frontend_debug_skill: true`)
-- Configuration enables GitHub issue integration (`integrations.invoke_on_github_issue: true`)
-
-**Invocation**:
-```bash
-# Pass issue number to frontend-debug skill
-@~/.claude/skills/frontend-debug/SKILL.md --github-issue 123
-```
-
-**Behavior**:
-- Frontend-debug skill loads issue details
-- Begins systematic debugging workflow
-- User continues with frontend-debug skill guidance
-- Task-start skill completes successfully
-
-**Note**: In the future, this will be replaced with a more general debugging skill that handles all issue types, not just frontend issues.
-
-### Phase 8: Final Summary
+### Phase 7: Final Summary
 
 **Display session initialization results**:
 - ✅ Preflight checks passed
 - ✅ Environment health validated (with auto-fixes applied)
-- ✅ Task loaded: GitHub Issue #123 or user description
-- ✅ Branch created: feature/123-user-authentication
+- ✅ Task name: user-auth
+- ✅ Branch created: feature/user-auth
 - ✅ Session logged
-- ✅ Frontend-debug skill invoked (if applicable)
 
-**Ready to work**: Environment prepared and task context loaded
+**Ready to work**: Environment prepared and ready for task implementation
+
+**Note**: The user is responsible for describing and coordinating the task implementation themselves.
 
 ## Configuration Schema
 
@@ -327,14 +251,7 @@ Configuration shared with task-wrapup skill in `.task_wrapup_skill_data.json`:
 
     "branch_naming": {
       "prefix": "feature",
-      "include_issue_number": true,
       "max_length": 50
-    },
-
-    "github": {
-      "enabled": true,
-      "default_behavior": "prompt_user",
-      "labels_priority_order": ["urgent", "high", "medium", "low"]
     },
 
     "environment": {
@@ -362,11 +279,6 @@ Configuration shared with task-wrapup skill in `.task_wrapup_skill_data.json`:
       "session_logs_dir": ".claude/sessions",
       "track_start_time": true,
       "create_session_file": false
-    },
-
-    "integrations": {
-      "frontend_debug_skill": true,
-      "invoke_on_github_issue": true
     }
   },
 
@@ -379,53 +291,42 @@ Configuration shared with task-wrapup skill in `.task_wrapup_skill_data.json`:
 
 ## Usage Examples
 
-### Basic Usage - Start New Task
+### Basic Usage - Start New Task with Name
 ```
-User: "Start new task for user authentication"
+User: "Start new task for user-auth"
 ```
 
 The skill will:
 1. Run preflight checks (git status, working directory)
 2. Validate environment (Docker, DB, dependencies)
-3. Prompt for task description if not provided
-4. Create branch: `feature/user-authentication`
+3. Extract task name "user-auth" from prompt
+4. Create branch: `feature/user-auth`
 5. Display ready-to-work confirmation
 
-### Start Task with GitHub Issue Number
-```
-User: "Start task for issue #123"
-```
-
-The skill will:
-1. Run all validation checks
-2. Fetch GitHub Issue #123 details
-3. Display issue summary for confirmation
-4. Create branch: `feature/123-{sanitized-title}`
-5. Invoke frontend-debug skill if issue is frontend-related
-
-### Start Task - Highest Priority Issue
-```
-User: "Start next task"
-```
-
-The skill will:
-1. Run validation checks
-2. Fetch highest priority open GitHub Issue
-3. Display issue for user confirmation
-4. Create appropriately named branch
-5. Proceed with skill integration if applicable
-
-### Manual Task Description
+### Start Task - Prompt for Name
 ```
 User: "Start task"
 ```
 
-If no GitHub Issue specified:
+The skill will:
+1. Run all validation checks
+2. Prompt: "What is the task name?" with options:
+   - a) Specify task name
+   - b) Use default (timestamp-based)
+   - c) Skip (uses "new-task")
+3. Create branch from task name
+4. Ready to work
+
+### Start Task with Inline Name
+```
+User: "Startup task payment-api"
+```
+
+The skill will:
 1. Complete all validation
-2. Prompt: "What task are you starting?"
-3. User provides description
-4. Create branch from description
-5. Ready to work
+2. Use "payment-api" as task name
+3. Create branch: `feature/payment-api`
+4. Display confirmation
 
 ## Error Handling
 
@@ -484,43 +385,12 @@ Consider applying or clearing stashes before starting new task
 ```
 **Action**: User decides whether to update before proceeding
 
-### GitHub Integration Failures
-
-**GitHub CLI Not Installed**:
-```
-❌ GitHub CLI (gh) not installed or not authenticated
-   Install: brew install gh
-   Authenticate: gh auth login
-```
-**Fallback**: Prompt user for manual task description
-
-**No Open Issues**:
-```
-⚠️  No open issues found
-```
-**Fallback**: Prompt user for manual task description
-
-**Issue Closed**:
-```
-⚠️  Issue #123 is not open (state: CLOSED)
-```
-**Action**: User selects different issue or provides description
-
 ## Integration with Other Skills
 
 ### Task-Wrapup Skill
 - **Shared configuration**: Uses same `.task_wrapup_skill_data.json` file
-- **Complementary workflow**: task-start begins session, task-wrapup ends it
+- **Complementary workflow**: task-startup begins session, task-wrapup ends it
 - **Session continuity**: Session logs can inform wrap-up summaries
-
-### Frontend-Debug Skill
-- **Auto-invocation**: Triggered for GitHub Issue-based frontend tasks
-- **Issue context**: Passes issue number to debug skill
-- **Seamless handoff**: User continues with debug workflow after initialization
-
-### Contacts Skill
-- **Future integration**: Potential for notifying team members when starting tasks
-- **Not currently implemented**: Placeholder for future enhancement
 
 ## Bundled Scripts
 
@@ -565,24 +435,11 @@ python3 scripts/config_manager.py path [--directory DIR]
 
 **Environment**: DOCKER_ENABLED, DOCKER_AUTO_START, DOCKER_HEALTH_URL, CHECK_MIGRATIONS, AUTO_MIGRATE, CHECK_DEPS, CRITICAL_VARS
 
-### scripts/github-issue-fetch.py
-**Purpose**: GitHub Issue integration and priority detection
-
-**Features**:
-- Fetch specific issue by number
-- Find highest priority open issue
-- Priority detection from labels
-- JSON and summary output formats
-- GitHub CLI integration
-
-**Requirements**: gh CLI installed and authenticated
-
 ### scripts/branch-create.sh
 **Purpose**: Consistent branch naming and creation
 
 **Features**:
 - Automatic name sanitization
-- Issue number integration
 - Length constraints (50 chars)
 - Lowercase normalization
 - Base branch switching
@@ -600,12 +457,11 @@ python3 scripts/config_manager.py path [--directory DIR]
 ### Workflow Integration
 1. Always start tasks with this skill for consistency
 2. Let auto-fix handle environment issues when safe
-3. Review GitHub Issue before starting work
-4. Use descriptive branch names even without issue numbers
-5. Leverage frontend-debug skill integration for bug fixes
+3. Use descriptive task names for clarity
+4. User is responsible for task description and coordination
 
 ### Team Coordination
-1. Establish team conventions for priority labels
+1. Establish team conventions for task naming
 2. Use consistent base branch across team
 3. Document protected branches in configuration
 4. Share configuration file structure for new projects
@@ -613,12 +469,11 @@ python3 scripts/config_manager.py path [--directory DIR]
 ## Future Enhancements
 
 ### Planned Features
-- General debugging skill integration (not just frontend)
 - Team notification when starting tasks
 - Time estimation integration
 - Dependency auto-update option
 - Multiple branch naming conventions
-- Jira/Linear integration alongside GitHub
+- Task tracking integration (Jira/Linear)
 
 ### Potential Improvements
 - IDE integration for automatic environment setup
@@ -631,5 +486,5 @@ python3 scripts/config_manager.py path [--directory DIR]
 
 **Author**: Claude Code SuperClaude Framework
 **License**: MIT
-**Repository**: ~/.claude/skills/task-start/
-**Version**: 1.0.0
+**Repository**: ~/.claude/skills/task-startup/
+**Version**: 2.0.0

@@ -2,7 +2,7 @@
 name: frontend-debug-agent
 description: Complex frontend debugging orchestrator. Coordinates specialized debugging sub-agents (network, state, UI, performance) for systemic issues requiring multi-domain investigation. Use when root cause analysis confidence <60%, multiple interacting systems involved, or systemic issues affecting multiple components.
 subagent_type: root-cause-analyst
-allowed-tools: Task, Read, Write, Edit, TodoWrite, mcp__chrome-devtools__*, Skill(report-bug), mcp__sequential-thinking__*, SlashCommand(/analyze), SlashCommand(/sc:troubleshoot), SlashCommand(/implement), SlashCommand(/test), SlashCommand(/document)
+allowed-tools: Task, Read, Write, Edit, TodoWrite, Skill(chrome-devtools), Skill(report-bug), mcp__sequential-thinking__*, SlashCommand(/analyze), SlashCommand(/sc:troubleshoot), SlashCommand(/implement), SlashCommand(/test), SlashCommand(/document)
 ---
 
 # Frontend Debug Agent - Complex Investigation Orchestrator
@@ -247,7 +247,7 @@ specialist_spawn:
     relevance_score: "[calculated score]"
   }
   tools: [
-    "mcp__chrome-devtools__*",
+    "Skill(chrome-devtools)",
     "Read",
     "Grep",
     "Glob",

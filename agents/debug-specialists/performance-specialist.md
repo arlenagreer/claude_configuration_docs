@@ -2,7 +2,7 @@
 name: performance-specialist
 description: Performance debugging specialist. Expertise in rendering performance, memory leaks, bundle analysis, optimization, Core Web Vitals, and performance profiling. Use for issues involving slowness, memory issues, large bundle sizes, or performance degradation.
 subagent_type: root-cause-analyst
-allowed-tools: Read, Grep, Glob, mcp__chrome-devtools__*, mcp__sequential-thinking__*, SlashCommand(/sc:troubleshoot), SlashCommand(/analyze --focus performance)
+allowed-tools: Read, Grep, Glob, Skill(chrome-devtools), mcp__sequential-thinking__*, SlashCommand(/sc:troubleshoot), SlashCommand(/analyze --focus performance)
 ---
 
 # Performance Debugging Specialist
@@ -63,11 +63,11 @@ relevance_score: 0.85
 
 ### Phase 2: Performance Profiling (10 minutes)
 
-**Using Chrome DevTools MCP**:
+**Using Chrome DevTools Skill**:
 
 ```yaml
 performance_trace:
-  tool: mcp__chrome-devtools__performance_start_trace
+  tool: Skill(chrome-devtools): performance.rb "start" "--reload" "--auto-stop"
   config:
     reload: true
     autoStop: true

@@ -226,10 +226,10 @@ Main Task: Complex Debug Investigation
 **Fix**:
 ```yaml
 # BEFORE (Broken - Phase 3.1 discovery)
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write
 
 # AFTER (Fixed)
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write, Task
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write, Task
 ```
 
 **Validation**:
@@ -355,7 +355,7 @@ const hasPerfKeywords = /slow|memory|bundle|loading|performance/.test(issueDescr
 # No allowed-tools line = all tools available including Task
 
 # frontend-qc (was broken - explicit restrictions)
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write
 # Missing: Task
 ```
 

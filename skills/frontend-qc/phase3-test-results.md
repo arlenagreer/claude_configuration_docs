@@ -253,8 +253,8 @@ N/A - Sub-agents were not spawned due to Task tool unavailability
 
 **Root Cause Identified** (2025-10-23 13:45):
 - frontend-qc/SKILL.md line 4 was missing `Task` in `allowed-tools` list
-- Skill had: `mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write`
-- Skill needed: `mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write, Task`
+- Skill had: `Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write`
+- Skill needed: `Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write, Task`
 
 **Fix Applied** ✅:
 - Added `Task` to frontend-qc allowed-tools list

@@ -19,7 +19,7 @@ During Phase 3.1 testing (4-component parallel QA test), the frontend-qc skill:
 
 **frontend-qc/SKILL.md line 4** (before fix):
 ```yaml
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write
 ```
 
 **Missing**: `Task` tool
@@ -54,12 +54,12 @@ allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, W
 
 **Before**:
 ```yaml
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write
 ```
 
 **After**:
 ```yaml
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write, Task
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write, Task
 ```
 
 ### Verification Required
@@ -85,7 +85,7 @@ When creating skills that need to delegate to agents:
 **Required in `allowed-tools`**:
 - `Task` - For agent delegation
 - `Read`, `Write` - For file operations
-- Domain-specific MCPs (e.g., `mcp__chrome-devtools__*`)
+- Domain-specific Skills (e.g., `Skill(chrome-devtools)`)
 - Other skills (e.g., `Skill(report-bug)`)
 
 **Example Template**:
@@ -93,7 +93,7 @@ When creating skills that need to delegate to agents:
 ---
 name: my-skill
 description: "..."
-allowed-tools: Task, Read, Write, Skill(other-skill), mcp__domain__*
+allowed-tools: Task, Read, Write, Skill(other-skill), Skill(domain-skill)
 ---
 ```
 

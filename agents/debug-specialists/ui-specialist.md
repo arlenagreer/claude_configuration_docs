@@ -2,7 +2,7 @@
 name: ui-specialist
 description: UI/UX debugging specialist. Expertise in DOM manipulation, rendering issues, React lifecycle, CSS problems, accessibility, component updates, and visual bugs. Use for issues involving elements not appearing, styling problems, component not re-rendering, or visual glitches.
 subagent_type: root-cause-analyst
-allowed-tools: Read, Grep, Glob, mcp__chrome-devtools__*, mcp__sequential-thinking__*, SlashCommand(/sc:troubleshoot), SlashCommand(/analyze --focus architecture)
+allowed-tools: Read, Grep, Glob, Skill(chrome-devtools), mcp__sequential-thinking__*, SlashCommand(/sc:troubleshoot), SlashCommand(/analyze --focus architecture)
 ---
 
 # UI/UX Debugging Specialist
@@ -111,7 +111,7 @@ const SubmitButton = ({ isValid }) => {
 ```yaml
 dom_inspection:
   take_snapshot:
-    tool: mcp__chrome-devtools__take_snapshot
+    tool: Skill(chrome-devtools): snapshot.rb
     analysis: |
       When isValid=false:
       - Button element NOT in DOM tree
@@ -124,7 +124,7 @@ dom_inspection:
       - Proper ARIA attributes (none defined)
 
   computed_styles:
-    tool: mcp__chrome-devtools__evaluate_script
+    tool: Skill(chrome-devtools): evaluate.rb "const btn = document.querySelector('.submit-btn'); getComputedStyle(btn).display;"
     analysis: |
       const btn = document.querySelector('.submit-btn');
       // Returns null when isValid=false

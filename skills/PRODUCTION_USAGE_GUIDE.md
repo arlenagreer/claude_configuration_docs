@@ -396,7 +396,7 @@ head -10 ~/.claude/skills/frontend-qc/SKILL.md
 
 **Look for**:
 ```yaml
-allowed-tools: mcp__chrome-devtools__*, Skill(report-bug), Skill(email), Read, Write, Task
+allowed-tools: Skill(chrome-devtools), Skill(report-bug), Skill(email), Read, Write, Task
 #                                                                                      ^^^^
 #                                                              MUST include Task for delegation
 ```
