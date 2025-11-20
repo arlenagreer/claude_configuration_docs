@@ -123,27 +123,49 @@ These contacts have preferred email addresses that ALWAYS take precedence over G
 - **Single Recipient**: BCC only if user explicitly requests "bcc me"
 - **Verification**: Before sending ANY multi-recipient email, confirm BCC field includes arlenagreer@gmail.com
 
-### 2. Security Review (MANDATORY)
+### 2. Security Review (🔴 CRITICAL - MANDATORY)
 
-**🔒 BEFORE composing email, scan for sensitive information:**
+**🔴 CRITICAL: BEFORE composing ANY email, MUST scan ALL content for sensitive information:**
 
-**Never Include**:
-- ❌ Passwords (current, temporary, default)
-- ❌ API keys, access tokens, auth credentials
-- ❌ Private keys (SSH, PGP, certificates)
-- ❌ Database credentials, connection strings
-- ❌ Credit card information (use last 4 digits only)
-- ❌ Social Security Numbers, government IDs
-- ❌ Secret environment variables
+**NEVER Include These in Emails (Zero Tolerance)**:
+- ❌ **API Tokens** - Including app-specific tokens, bearer tokens, service tokens
+- ❌ **API Keys** - AWS keys, Google API keys, service API keys, authentication keys
+- ❌ **Access Tokens** - OAuth tokens, JWT tokens, session tokens, refresh tokens
+- ❌ **Passwords** - Current, temporary, default, or any password variations
+- ❌ **Auth Credentials** - Username/password pairs, login credentials, auth strings
+- ❌ **Private Keys** - SSH keys, PGP keys, certificates, signing keys
+- ❌ **Database Credentials** - Connection strings, database passwords, DB URLs with credentials
+- ❌ **Credit Card Information** - Full numbers (use last 4 digits only if absolutely necessary)
+- ❌ **Social Security Numbers** - Or any government-issued ID numbers
+- ❌ **Secret Environment Variables** - AWS credentials, secret keys, config secrets
+
+**🔴 CRITICAL API Token Examples (MUST REDACT)**:
+```
+❌ WRONG: "The API token is: j22pamuqie56upqinzeeNj"
+❌ WRONG: "Use api_token=abc123xyz456 for authentication"
+❌ WRONG: "Bearer token: eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+
+✅ CORRECT: "I've configured the API token (redacted for security)"
+✅ CORRECT: "API token: ...XXXX (last 4 chars: Nj)"
+✅ CORRECT: "The authentication token has been set up in the system"
+✅ CORRECT: "Token configured (see secure documentation for access)"
+```
 
 **When Sensitive Info Must Be Referenced**:
-```
-✅ Good: "I've configured the API key (redacted for security)"
-✅ Good: "API key: sk-proj-...XXXX (last 4 chars for verification)"
-❌ Bad: "Here's your password: MyP@ssw0rd123"
-```
+- Reference it exists but NEVER include actual value
+- Use "...XXXX" notation with last 4 characters only if verification needed
+- Direct recipient to secure channel (secure docs, password manager, encrypted communication)
+- Provide system location where they can find it securely
 
-**Remember**: Email is NOT ENCRYPTED. When in doubt, redact it out.
+**Scanning Procedure (MANDATORY)**:
+1. 🔍 **Scan user's original request** for any sensitive data
+2. 🔍 **Scan email body** you're about to compose for any secrets
+3. 🔍 **Scan code snippets** or technical examples for credentials
+4. 🔍 **Scan URLs** for embedded tokens (e.g., `?token=...` or `?api_key=...`)
+5. 🔍 **Scan configuration examples** for default/example credentials
+6. 🔒 **REDACT immediately** if ANY sensitive data found
+
+**Remember**: Email is NOT ENCRYPTED. When in doubt, redact it out. NEVER compromise security for convenience.
 
 ### 3. Date & Theme Selection
 
@@ -370,11 +392,16 @@ echo '{"query":"is:unread","max_results":10}' | gmail_manager.rb list
 
 ## Pre-Send Checklist
 
-**🔒 Security (Check FIRST)**:
-- ✅ No passwords or credentials visible
-- ✅ API keys and tokens redacted
-- ✅ URLs checked for embedded auth
-- ✅ Log outputs sanitized
+**🔴 CRITICAL: Security (Check FIRST - MANDATORY)**:
+- ✅ **API Tokens**: ALL tokens redacted or removed (ZERO TOLERANCE)
+- ✅ **API Keys**: No AWS, Google, or service API keys visible
+- ✅ **Passwords**: No passwords or credentials of any kind
+- ✅ **Access Tokens**: OAuth, JWT, bearer tokens all redacted
+- ✅ **URLs**: Checked for embedded tokens (?token=, ?api_key=, auth parameters)
+- ✅ **Code Examples**: Configuration and code snippets sanitized
+- ✅ **Log Outputs**: System logs and debug output sanitized
+- ✅ **Database Credentials**: Connection strings and DB passwords removed
+- ⚠️ **IF ANY SENSITIVE DATA FOUND**: STOP immediately and redact before sending
 
 **🔴 Name Validation (CRITICAL)**:
 - ✅ No references to "Arlena" (incorrect name - must be "Arlen")
